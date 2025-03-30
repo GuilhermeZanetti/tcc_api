@@ -1,10 +1,10 @@
 VERSION := 0.1.0
 
 setup:
-	uv install
+	uv sync
 
 run:
-	@hypercorn judge.main:app --reload
+	@uv run hypercorn judge.main:app --reload
 
 run-migrations:
 	@mongodb-migrate --url 'mongodb://127.0.0.1:27017/judge?replicaSet=rs0' --migrations migrations --database judge

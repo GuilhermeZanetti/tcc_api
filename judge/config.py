@@ -1,8 +1,10 @@
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic.networks import AnyHttpUrl
+from dotenv import load_dotenv
 
+load_dotenv("local.env")
 
 class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = Field(default=[])
@@ -13,6 +15,9 @@ class Settings(BaseSettings):
     MONGODB_DATABASE: str = Field(default='judge')
 
     TLE_TIMEOUT: int = Field(default=30)
+
+    SECRET_KEY: SecretStr
+    JWT_ALGORITHM: str = Field(default="MAVI1701")
 
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).parents[1] / '.env'),
