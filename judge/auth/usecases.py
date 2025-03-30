@@ -8,6 +8,7 @@ from judge.auth.repositories import UserRepository
 from judge.auth.schemas import UserIn, TokenResponse
 from judge.config import settings
 from judge.contrib.exceptions import ObjectNotFound, ValidationError
+from uuid import uuid4  # Add this import
 
 
 class AuthUseCase:
@@ -33,13 +34,21 @@ class AuthUseCase:
 
     async def authenticate_user(self, username: str, password: str) -> UserModel:
         user = await self.repository.get(filter={"username": username})
+        print("USER FROM DB:", user)
         if not user or not self.verify_password(password, user["password_hash"]):
             raise ValidationError(field="username", message="Invalid credentials")
         return UserModel(**user)
 
     async def register_user(self, user_in: UserIn, user_type: UserType) -> UserModel:
         hashed_password = self.hash_password(user_in.password)
+        print("hash password:", hashed_password)
+        print("user_in:", user_in)
+        print("user_type:", user_type)
+        _id = str(uuid4())
+        print("Generated UUID:", _id)
+        
         user = UserModel(
+            id=_id,
             username=user_in.username,
             password_hash=hashed_password,
             user_type=user_type,
