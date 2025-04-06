@@ -28,11 +28,15 @@ class Judge:
         if not runner:
             raise ValueError(f"Unsupported language type: {submission.language_type}")
 
-        code = Base64Utils.decode(submission.content)
-        response = runner.run(code, data['data_entry'])
-        expected_output = self._decode_output(data['data_output'])
-        status = self._evaluate(response, expected_output)
-
+        try:
+            code = Base64Utils.decode(submission.content)
+            response = runner.run(code, data['data_entry'])
+            expected_output = self._decode_output(data['data_output'])
+            status = self._evaluate(response, expected_output)
+        except ValueError as ve:
+            status = STATUS_COMPILATION_ERROR
+            print(f"Compilation error: {ve}")
+        
         await self._update_submission_status(submission.id, status)
 
     def _get_runner(self, language_type: str):
