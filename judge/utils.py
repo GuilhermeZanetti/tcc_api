@@ -12,3 +12,4 @@ def load_identifier(name: str) -> Any:
     except ModuleNotFoundError as ex:
         raise AttributeError(f'Module not found {ex}') from ex
     return getattr(module, identifier)
+

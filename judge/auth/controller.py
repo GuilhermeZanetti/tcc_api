@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header, status
 from fastapi.security import OAuth2PasswordRequestForm
 from judge.auth.schemas import UserIn, UserOut, TokenResponse
+from judge.auth.security import validar_jwt
 from judge.auth.usecases import AuthUseCase
 from judge.auth.models import UserType
 from judge.contrib.documentation import ForbiddenErrorResponse, InternalServerErrorResponse, NotFoundErrorResponse, UnprocessableEntityErrorResponse, ValidationErrorResponse
@@ -29,11 +30,11 @@ def validate_api_key(x_api_key: str = Header(None)):
              )
 async def register(user_in: UserIn, 
                    user_type: UserType, 
-                   use_case: AuthUseCase = Depends(),
-                   x_api_key: str = Depends(validate_api_key)
+                   use_case: AuthUseCase = Depends(), 
+                   token: str = Depends(validar_jwt)
                 ) -> UserOut:
     try:
-        
+        print(token)
         if user_type not in UserType:
             raise ValidationError(field="user_type", message="Invalid user type")
         
