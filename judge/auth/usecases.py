@@ -41,14 +41,9 @@ class AuthUseCase:
 
     async def register_user(self, user_in: UserIn, user_type: UserType) -> UserModel:
         hashed_password = self.hash_password(user_in.password)
-        print("hash password:", hashed_password)
-        print("user_in:", user_in)
-        print("user_type:", user_type)
-        _id = str(uuid4())
-        print("Generated UUID:", _id)
-        
+
         user = UserModel(
-            id=_id,
+            id=uuid4(),
             username=user_in.username,
             password_hash=hashed_password,
             user_type=user_type,

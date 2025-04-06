@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     TLE_TIMEOUT: int = Field(default=30)
 
     SECRET_KEY: SecretStr
+    API_KEY_MASTER: SecretStr = Field(env='API_KEY_MASTER')
+    
     JWT_ALGORITHM: str = Field(default="MAVI1701")
 
     model_config = SettingsConfigDict(

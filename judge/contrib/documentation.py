@@ -19,3 +19,11 @@ class UnprocessableEntityErrorResponse(ErrorResponse):
 
 class InternalServerErrorResponse(ErrorResponse):
     detail: str = 'Internal Server Error'
+
+class ForbiddenErrorResponse(ErrorResponse):
+    detail: str = 'Forbidden'
+    
+    
+class ValidationErrorResponse(ErrorResponse):
+    detail: str = 'Validation Error'
+    errors: list[dict] = Field(description='List of validation errors')

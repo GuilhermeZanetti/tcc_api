@@ -15,6 +15,6 @@ class UserOut(BaseModel):
     user_type: UserType = Field(title="User Type")
 
 
-class TokenResponse(BaseModelMixin):
+class TokenResponse(BaseModel):
     access_token: str = Field(title="Access Token")
     token_type: str = Field(default="bearer", title="Token Type")
