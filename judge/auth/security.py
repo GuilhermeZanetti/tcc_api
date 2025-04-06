@@ -19,7 +19,7 @@ async def validar_jwt(credentials: HTTPAuthorizationCredentials = Security(secur
 def gerar_token():
     payload = {
         "sub": "api_externa",
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=60)
     }
     token = jwt.encode(payload, settings.API_KEY_MASTER.get_secret_value(), algorithm="HS256")
     return token

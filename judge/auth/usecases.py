@@ -28,15 +28,15 @@ class AuthUseCase:
 
     def create_access_token(self, data: dict, expires_delta: timedelta | None = None) -> str:
         to_encode = data.copy()
-        expire = datetime.now() + (expires_delta or timedelta(minutes=15))
+        expire = datetime.now() + (expires_delta or timedelta(minutes=60))
         to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+        return jwt.encode(to_encode, settings.SECRET_KEY.get_secret_value(),  algorithm=settings.JWT_ALGORITHM)
 
     async def authenticate_user(self, username: str, password: str) -> UserModel:
         user = await self.repository.get(filter={"username": username})
         print("USER FROM DB:", user)
         if not user or not self.verify_password(password, user["password_hash"]):
-            raise ValidationError(field="username", message="Invalid credentials")
+            raise ValidationError(field="username or password", message="Invalid credentials")
         return UserModel(**user)
 
     async def register_user(self, user_in: UserIn, user_type: UserType) -> UserModel:

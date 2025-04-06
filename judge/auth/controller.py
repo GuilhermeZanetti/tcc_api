@@ -4,7 +4,7 @@ from judge.auth.schemas import UserIn, UserOut, TokenResponse
 from judge.auth.security import validar_jwt
 from judge.auth.usecases import AuthUseCase
 from judge.auth.models import UserType
-from judge.contrib.documentation import ForbiddenErrorResponse, InternalServerErrorResponse, NotFoundErrorResponse, UnprocessableEntityErrorResponse, ValidationErrorResponse
+from judge.contrib.documentation import ForbiddenErrorResponse, InternalServerErrorResponse, NotFoundErrorResponse, UnauthorizedErrorResponse, UnprocessableEntityErrorResponse, ValidationErrorResponse
 from judge.contrib.exceptions import ValidationError
 from judge.config import settings
 
@@ -15,7 +15,7 @@ def validate_api_key(x_api_key: str = Header(None)):
     Valida a API_KEY_MASTER recebida no cabeçalho HTTP.
     """
     if x_api_key != settings.API_KEY_MASTER.get_secret_value():
-        raise HTTPException(status_code=403, detail="Acesso não autorizado")
+        raise HTTPException(status_code=403, detail="Unauthorized access")
 
 @router.post("/register", 
              summary="Register a new user",
@@ -34,7 +34,7 @@ async def register(user_in: UserIn,
                    token: str = Depends(validar_jwt)
                 ) -> UserOut:
     try:
-        print(token)
+
         if user_type not in UserType:
             raise ValidationError(field="user_type", message="Invalid user type")
         
@@ -82,12 +82,28 @@ async def register(user_in: UserIn,
             "model": TokenResponse,  
         },
         404: {'model': NotFoundErrorResponse},
+        401: {'model': UnauthorizedErrorResponse},
+        403: {'model': ForbiddenErrorResponse},
+        400: {'model': ValidationErrorResponse},
         422: {'model': UnprocessableEntityErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), 
-                use_case: AuthUseCase = Depends()
+async def login(user_in: UserIn,
+                use_case: AuthUseCase = Depends(),
             ) -> TokenResponse:
-    user = await use_case.authenticate_user(form_data.username, form_data.password)
-    access_token = use_case.create_access_token(data={"sub": user.username, "type": user.user_type})
+    try:
+        user = await use_case.authenticate_user(user_in.username, user_in.password)
+        access_token = use_case.create_access_token(data={"sub": user.username, "type": user.user_type})
+    except ValidationError as ve:
+        status_code = status.HTTP_400_BAD_REQUEST
+        if ve.message == "Invalid credentials":
+            status_code = status.HTTP_401_UNAUTHORIZED
+        
+        raise HTTPException(
+            status_code=status_code, 
+            detail=ve.errors(),
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
     return TokenResponse(access_token=access_token)

@@ -27,3 +27,7 @@ class ForbiddenErrorResponse(ErrorResponse):
 class ValidationErrorResponse(ErrorResponse):
     detail: str = 'Validation Error'
     errors: list[dict] = Field(description='List of validation errors')
+    
+class UnauthorizedErrorResponse(ErrorResponse):
+    detail: str = 'Unauthorized (Invalid credentials)'
+    errors: list[dict] = Field(description='List of validation errors')

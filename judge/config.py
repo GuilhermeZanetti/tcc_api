@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     SECRET_KEY: SecretStr
     API_KEY_MASTER: SecretStr = Field(env='API_KEY_MASTER')
     
-    JWT_ALGORITHM: str = Field(default="MAVI1701")
+    JWT_ALGORITHM: str = Field(env='JWT_ALGORITHM', default="HS256")
 
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).parents[1] / '.env'),
