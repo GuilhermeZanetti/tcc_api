@@ -13,7 +13,7 @@ def validate_api_key(x_api_key: str = Header(None)):
     """
     Valida a API_KEY_MASTER recebida no cabeçalho HTTP.
     """
-    if x_api_key != settings.API_KEY_MASTER:
+    if x_api_key != settings.API_KEY_MASTER.get_secret_value():
         raise HTTPException(status_code=403, detail="Acesso não autorizado")
 
 @router.post("/register", 
@@ -33,7 +33,6 @@ async def register(user_in: UserIn,
                    x_api_key: str = Depends(validate_api_key)
                 ) -> UserOut:
     try:
-        validate_api_key()
         
         if user_type not in UserType:
             raise ValidationError(field="user_type", message="Invalid user type")
