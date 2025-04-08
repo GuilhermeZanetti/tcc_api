@@ -6,6 +6,7 @@ from judge.contrib.documentation import (
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
+from judge.contrib.security import validar_jwt
 from judge.submissions.schemas import (
     SubmissionCollectionResponse,
     SubmissionIn,
@@ -14,7 +15,7 @@ from judge.submissions.schemas import (
 from judge.submissions.usecases import SubmissionUseCase
 from judge.contrib.exceptions import ObjectNotFound, ValidationError
 
-router = APIRouter(tags=['submissions'], prefix='/v0/submissions')
+router = APIRouter(tags=['submissions'], prefix='/v0/submissions', dependencies=[Depends(validar_jwt)])
 
 
 @router.post(
