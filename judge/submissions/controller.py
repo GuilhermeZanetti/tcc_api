@@ -73,6 +73,25 @@ async def get(
 
     return submission
 
+@router.get(
+    '/user_id/{user_id}',
+    summary='Get a list of submissions by User Id',
+    status_code=status.HTTP_200_OK,
+    response_model=SubmissionCollectionResponse,
+    responses={
+        200: {'model': SubmissionCollectionResponse},
+        404: {'model': NotFoundErrorResponse},
+        500: {'model': InternalServerErrorResponse},
+    },
+)
+async def get_by_user_id(
+    user_id: UUID4,
+    use_case: SubmissionUseCase = Depends(),
+) -> SubmissionCollectionResponse:
+    submissions = await use_case.get_by_user_id(user_id=user_id)
+
+    return submissions
+
 
 @router.get(
     '',

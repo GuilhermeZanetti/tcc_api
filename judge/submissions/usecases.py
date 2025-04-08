@@ -72,6 +72,12 @@ class SubmissionUseCase:
             )
 
         return SubmissionOut(**submission)
+    
+    
+    async def get_by_user_id(self, user_id: UUID4) -> SubmissionCollectionResponse:
+        submissions = await self.repository.query(filter={'user_id': user_id})
+
+        return SubmissionCollectionResponse.create(results=submissions)
 
     async def query(self) -> SubmissionCollectionResponse:
         submissions = await self.repository.query()

@@ -13,6 +13,7 @@ from judge.submissions.examples import (
 
 class Submission(Model):
     problem_id: UUID = Field(title='Problem id')
+    user_id: UUID = Field(title='User id')
     language_type: str = Field(title='Language type')
     content: str = Field(title='Code')
     status: str = Field(title='Status')
@@ -20,6 +21,7 @@ class Submission(Model):
 
 class SubmissionIn(BaseModel):
     problem_id: UUID = Field(title='Problem id')
+    user_id: UUID = Field(title='User id')
     language_type: str = Field(title='Language type')
     content: str = Field(title='Code')
 
