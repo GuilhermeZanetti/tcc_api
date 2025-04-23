@@ -15,4 +15,4 @@ class CollectionResponse(BaseModel):
             'results': results,
         }
 
-        return cls.parse_obj(collection_response)
+        return cls.model_validate(collection_response)

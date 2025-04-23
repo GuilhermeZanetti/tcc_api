@@ -12,3 +12,4 @@ class SubmissionRepository(Repository):
         self.client = client
 
     storage_name: str = 'submissions'
+

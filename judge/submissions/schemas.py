@@ -8,6 +8,7 @@ from judge.submissions.examples import (
     submission_collection_response_example,
     submission_in_example,
     submission_out_example,
+    submission_update_example,
 )
 
 
@@ -20,6 +21,7 @@ class Submission(Model):
 
 
 class SubmissionIn(BaseModel):
+    id: UUID = Field(title='Submission id')
     problem_id: UUID = Field(title='Problem id')
     user_id: UUID = Field(title='User id')
     language_type: str = Field(title='Language type')
@@ -37,3 +39,10 @@ class SubmissionOut(Submission, OutMixin):
 class SubmissionCollectionResponse(CollectionResponse):
     class Config:
         json_schema_extra = {'example': submission_collection_response_example}
+
+
+class SubmissionUpdate(BaseModel):
+    status: str = Field(title='Status')
+    
+    class Config:
+        json_schema_extra = {'example': submission_update_example}

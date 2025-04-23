@@ -14,4 +14,9 @@ submission_out_example = {
     'status': 'ACCEPTED',
 }
 
+
+submission_update_example = {
+    'status': 'ACCEPTED',
+}
+
 submission_collection_response_example = {'results': [submission_out_example]}
