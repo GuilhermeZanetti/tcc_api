@@ -13,3 +13,7 @@ submission_out_example = {
 }
 
 submission_collection_response_example = {"results": [submission_out_example]}
+
+submission_update_example = {
+    'status': 'ACCEPTED',
+}

@@ -17,6 +17,7 @@ from src.submissions.schemas import (
     SubmissionCollectionResponse,
     SubmissionIn,
     SubmissionOut,
+    SubmissionUpdate,
 )
 
 
@@ -101,3 +102,45 @@ class SubmissionUseCase:
         submissions = await self.repository.query()
 
         return SubmissionCollectionResponse.create(results=submissions)
+
+
+
+    async def update(self, id: UUID4, submission_update: SubmissionUpdate) -> SubmissionOut:
+        
+        submission_data = await self.repository.get(
+            filter={'id': id}
+        )
+        
+        print(f'submission_data: {submission_data}')
+        
+        if not submission_data:
+            raise ObjectNotFound()
+        
+        try:
+            submission = SubmissionModel(**submission_data)
+            submission.status = submission_update.status
+            
+            print(f'submission: {submission}')
+        
+            if submission.language_type not in SUPPORTED_LANGUAGES:
+                raise ValidationError(
+                    message='Invalid language type', field='language_type'
+                )
+            
+            if not Base64Utils.is_valid(submission.content):
+                raise ValidationError(
+                    message='Invalid content, the content must be a valid base64.', field='content'
+                )
+            
+            response_update = await self.repository.update(submission.model_dump(), filter={'id': id})
+            print(f'response_update: {response_update}')
+            if not response_update:
+                raise ObjectNotFound()
+        except ValidationError as exc:
+                    raise ValidationError(
+                        message=exc.errors(), field='submission'
+                    )
+        except Exception as exc:
+            raise exc
+        
+        return SubmissionOut(**submission.model_dump())

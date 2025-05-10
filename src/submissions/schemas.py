@@ -8,6 +8,7 @@ from src.submissions.examples import (
     submission_collection_response_example,
     submission_in_example,
     submission_out_example,
+    submission_update_example,
 )
 
 
@@ -35,3 +36,9 @@ class SubmissionOut(Submission, OutMixin):
 class SubmissionCollectionResponse(CollectionResponse):
     class Config:
         json_schema_extra = {'example': submission_collection_response_example}
+
+
+class SubmissionUpdate(BaseModel):
+    status: str = Field(title='Status')    
+    class Config:
+        json_schema_extra = {'example': submission_update_example}

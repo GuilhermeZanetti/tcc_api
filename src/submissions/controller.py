@@ -10,6 +10,7 @@ from src.submissions.schemas import (
     SubmissionCollectionResponse,
     SubmissionIn,
     SubmissionOut,
+    SubmissionUpdate,
 )
 from src.submissions.usecases import SubmissionUseCase
 from src.contrib.exceptions import ObjectNotFound, ValidationError
@@ -90,3 +91,36 @@ async def query(
     submissions = await use_case.query()
 
     return submissions
+
+
+@router.put(
+    '/{id}',
+    summary='Update a Submission by id',
+    status_code=status.HTTP_200_OK,
+    response_model=SubmissionOut,
+    responses={
+        200: {'model': SubmissionOut},
+        404: {'model': NotFoundErrorResponse},
+        422: {'model': UnprocessableEntityErrorResponse},
+        500: {'model': InternalServerErrorResponse},
+    },
+)
+async def update(
+    id: UUID4,
+    submission_update: SubmissionUpdate = Body(...),
+    use_case: SubmissionUseCase = Depends(),
+) -> SubmissionOut:
+    try:
+        submission = await use_case.update(id=id, submission_update=submission_update)
+    except ObjectNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Submission with id {id} does not exist',
+        )
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=exc.errors(),
+        )
+
+    return submission
