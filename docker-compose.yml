@@ -9,9 +9,11 @@ services:
       - 27017:27017
     restart: always
     healthcheck:
-      test: test $$(echo "rs.initiate({_id:\"rs0\",version:1,members:[{_id:0,host:\"mongodb:27017\"}]}).ok || rs.slaveOk().ok || rs.status().ok" | mongo --quiet)
-      interval: 10s
-      start_period: 30s
+        test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+        start_period: 30s
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
 
   redis:

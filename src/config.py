@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     MONGODB_MAX_CONNECTIONS_COUNT: int = Field(default=10)
     MONGODB_MIN_CONNECTIONS_COUNT: int = Field(default=10)
-    MONGODB_URL: str = Field(default='MONGODB_URL')
+    MONGODB_URL: str = Field(default='mongodb://localhost:27017/judge?replicaSet=rs0')
     MONGODB_DATABASE: str = Field(default='judge')
 
     REDIS_HOST: str = Field(default='localhost')
