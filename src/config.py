@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     CASE_SENSITIVE: bool = Field(default=True)
 
     model_config = SettingsConfigDict(
-        env_file=str(Path(__file__).parents[1] / '.env'),
+        env_file=str(Path(__file__).parents[1] / 'local.env'),
         env_file_encoding='utf-8',
     )
 
