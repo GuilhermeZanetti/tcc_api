@@ -5,6 +5,7 @@ from src.contrib.documentation import (
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
+from src.contrib.security import validar_jwt
 from src.problems.schemas import (
     ProblemCollectionResponse,
     ProblemIn,
@@ -14,7 +15,7 @@ from src.problems.usecases import ProblemUseCase
 from src.contrib.exceptions import ObjectNotFound
 
 
-router = APIRouter(tags=['problems'], prefix='/v0/problems')
+router = APIRouter(tags=['problems'], prefix='/v0/problems', dependencies=[Depends(validar_jwt)])
 
 
 @router.post(

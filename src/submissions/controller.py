@@ -6,6 +6,7 @@ from src.contrib.documentation import (
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
+from src.contrib.security import validar_jwt
 from src.submissions.schemas import (
     SubmissionCollectionResponse,
     SubmissionIn,
@@ -16,7 +17,8 @@ from src.submissions.usecases import SubmissionUseCase
 from src.contrib.exceptions import ObjectNotFound, ValidationError
 
 
-router = APIRouter(tags=['submissions'], prefix='/v0/submissions')
+router = APIRouter(tags=['submissions'], prefix='/v0/submissions', dependencies=[Depends(validar_jwt)])
+
 
 
 @router.post(
