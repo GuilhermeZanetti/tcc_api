@@ -62,6 +62,7 @@ class Judge:
             'php': PHPRunner(),
             'js': JavaScriptRunner(),
             'go': GoRunner(),
+            'csharp': CSharpRunner(),
         }
         return runners.get(language_type)
 
@@ -250,6 +251,10 @@ class PythonRunner(CodeRunner):
         """Run Python code."""
         return self._execute("python {0}", code, data_input, settings.TLE_TIMEOUT)
 
+class CSharpRunner(CodeRunner):
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Run C# code."""
+        return self._execute("dotnet-script {0}", code, data_input, settings.TLE_TIMEOUT)
 
 class CRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
@@ -279,6 +284,7 @@ class JavaScriptRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run JavaScript code using Node.js."""
         return self._execute("node {0}", code, data_input, settings.TLE_TIMEOUT)
+
 
 
 class GoRunner(CodeRunner):
