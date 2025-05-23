@@ -9,4 +9,4 @@ STATUS_SECURITY_ERROR = "SECURITY ERROR"
 SUB_AUTHORIZE = "api_externa"
 TOKEN_PAYLOAD = "sub"
 AUTH_ALGORITHM = "HS256"
-SUPPORTED_LANGUAGES = {'py', 'c', 'cpp'}
+SUPPORTED_LANGUAGES = {'py', 'c', 'cpp', 'csharp', 'java', 'php', 'js', 'go'}
