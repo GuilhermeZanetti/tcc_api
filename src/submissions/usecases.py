@@ -103,7 +103,10 @@ class SubmissionUseCase:
 
         return SubmissionCollectionResponse.create(results=submissions)
 
+    async def get_by_user_id(self, user_id: UUID4) -> SubmissionCollectionResponse:
+        submissions = await self.repository.query(filter={'user_id': user_id})
 
+        return SubmissionCollectionResponse.create(results=submissions)
 
     async def update(self, id: UUID4, submission_update: SubmissionUpdate) -> SubmissionOut:
         
