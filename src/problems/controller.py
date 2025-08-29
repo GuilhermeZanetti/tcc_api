@@ -5,7 +5,7 @@ from src.contrib.documentation import (
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
-from src.contrib.security import validar_jwt
+from src.contrib.security import validar_jwt, validar_jwt_integrador
 from src.problems.schemas import (
     ProblemCollectionResponse,
     ProblemIn,
@@ -16,7 +16,7 @@ from src.problems.usecases import ProblemUseCase
 from src.contrib.exceptions import ObjectNotFound
 
 
-router = APIRouter(tags=['problems'], prefix='/v0/problems', dependencies=[Depends(validar_jwt)])
+router = APIRouter(tags=['problems'], prefix='/v0/problems')
 
 
 @router.post(
@@ -30,6 +30,7 @@ router = APIRouter(tags=['problems'], prefix='/v0/problems', dependencies=[Depen
         422: {'model': UnprocessableEntityErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt)]
 )
 async def post(
     use_case: ProblemUseCase = Depends(),
@@ -50,7 +51,8 @@ async def post(
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
-)
+    dependencies=[Depends(validar_jwt_integrador(["read:problems"]))]
+) # Integrator permission for read
 async def get(
     id: UUID4,
     use_case: ProblemUseCase = Depends(),
@@ -73,6 +75,7 @@ async def get(
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt)]
 )
 async def put(
     id: UUID4,
@@ -96,6 +99,7 @@ async def put(
         200: {'model': ProblemCollectionResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt_integrador(["read:problems"]))]
 )
 async def query(
     use_case: ProblemUseCase = Depends(),
