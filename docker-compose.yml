@@ -1,4 +1,29 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.judge
+    container_name: api
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/judge?replicaSet=rs0
+      - MONGODB_DATABASE=judge
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_QUEUE=submissions
+      - TLE_TIMEOUT=30
+      - API_KEY_MASTER=57fba00c-aa3d-4009-87d6-700f58a4032b
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
+    command: hypercorn src.main:app --reload --bind 0.0.0.0:8000
+
   mongodb:
     hostname: mongodb
     container_name: mongodb

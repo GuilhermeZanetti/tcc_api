@@ -15,5 +15,5 @@ class Integrator(BaseModelMixin):
     class Config:
         collection = "authentication"
         indexes = [
-            "hashed_api_key"
+            ("hashed_api_key", {"unique": True})
         ]
