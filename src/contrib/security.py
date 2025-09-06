@@ -40,7 +40,7 @@ def validar_jwt_integrador(required_permissions: list[str] = []):
         try:
             payload = jwt.decode(credentials.credentials, settings.API_KEY_MASTER.get_secret_value(), algorithms=[AUTH_ALGORITHM])
             
-            if "permissions" not in payload or payload.get(TOKEN_PAYLOAD) == SUB_AUTHORIZE:
+            if "permissions" not in payload:
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token de integrador inválido")
 
             integrator_permissions = payload.get("permissions", [])
