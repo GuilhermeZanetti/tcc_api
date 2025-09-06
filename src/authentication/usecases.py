@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import Depends
-from src.authentication.models import Integrator
+from src.authentication.models import IntegratorModel
 from src.authentication.repositories import IntegratorRepository
 
 
@@ -11,5 +11,8 @@ class AuthenticationUseCase:
         ) -> None:
         self.repository = repository
 
-    async def get_by_hashed_api_key(self, hashed_api_key: str) -> Optional[Integrator]:
-        return await self.repository.query({"hashed_api_key": hashed_api_key})
+    async def get_by_hashed_api_key(self, hashed_api_key: str) -> Optional[IntegratorModel]:
+        integrator_data = await self.repository.get({"hashed_api_key": hashed_api_key})
+        if integrator_data:
+            return IntegratorModel(**integrator_data)
+        return None

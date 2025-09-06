@@ -1,7 +1,7 @@
 from fastapi import Security, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from src.config import settings
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import jwt
 
 from src.contrib.constants import AUTH_ALGORITHM, SUB_AUTHORIZE, TOKEN_PAYLOAD
@@ -21,7 +21,7 @@ def validar_jwt(credentials: HTTPAuthorizationCredentials = Security(security)):
 def gerar_token():
     payload = {
         TOKEN_PAYLOAD: SUB_AUTHORIZE,
-        "exp": datetime.now(datetime.timezone.utc) + timedelta(minutes=60)
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=60)
     }
     token = jwt.encode(payload, settings.API_KEY_MASTER.get_secret_value(), algorithm=AUTH_ALGORITHM)
     return token
@@ -30,7 +30,7 @@ def gerar_token_integrador(integrator_id: str, permissions: list[str]):
     payload = {
         "sub": integrator_id,
         "permissions": permissions,
-        "exp": datetime.now(datetime.timezone.utc) + timedelta(minutes=60) # Token expira em 60 minutos
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=60)
     }
     token = jwt.encode(payload, settings.API_KEY_MASTER.get_secret_value(), algorithm=AUTH_ALGORITHM)
     return token
