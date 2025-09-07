@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Body, Depends, status, HTTPException
 from pydantic import UUID4
+from src.authentication.permissions import Permissions
 from src.contrib.documentation import (
     NotFoundErrorResponse,
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
-from src.contrib.security import validar_jwt, validar_jwt_integrador
+from src.contrib.security import validar_jwt_integrador
 from src.problems.schemas import (
     ProblemCollectionResponse,
     ProblemIn,
@@ -30,7 +31,7 @@ router = APIRouter(tags=['problems'], prefix='/v0/problems')
         422: {'model': UnprocessableEntityErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
-    dependencies=[Depends(validar_jwt)]
+    dependencies=[Depends(validar_jwt_integrador([Permissions.CREATE_PROBLEMS.value]))]
 )
 async def post(
     use_case: ProblemUseCase = Depends(),
@@ -51,8 +52,8 @@ async def post(
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
-    dependencies=[Depends(validar_jwt_integrador(["read:problems"]))]
-) # Integrator permission for read
+    dependencies=[Depends(validar_jwt_integrador([Permissions.READ_PROBLEMS.value]))]
+)
 async def get(
     id: UUID4,
     use_case: ProblemUseCase = Depends(),
@@ -75,7 +76,7 @@ async def get(
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
-    dependencies=[Depends(validar_jwt)]
+    dependencies=[Depends(validar_jwt_integrador([Permissions.UPDATE_PROBLEMS.value]))]
 )
 async def put(
     id: UUID4,
@@ -99,7 +100,7 @@ async def put(
         200: {'model': ProblemCollectionResponse},
         500: {'model': InternalServerErrorResponse},
     },
-    dependencies=[Depends(validar_jwt_integrador(["read:problems"]))]
+    dependencies=[Depends(validar_jwt_integrador([Permissions.READ_PROBLEMS.value]))]
 )
 async def query(
     use_case: ProblemUseCase = Depends(),
