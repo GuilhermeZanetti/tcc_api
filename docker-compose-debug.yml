@@ -1,0 +1,51 @@
+services:
+  mongodb:
+    hostname: mongodb
+    container_name: mongodb
+    image: mongo:5
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    restart: always
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-init-replica:
+    image: mongo:5
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    entrypoint: [ "bash", "-c", "sleep 5 && mongo --host mongodb:27017 --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"mongodb:27017\"}]})'" ]
+    restart: "no"
+
+  redis:
+    hostname: redis
+    container_name: redis
+    image: redis:7
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    restart: always
+
+  rq-dashboard:
+    image: eoranged/rq-dashboard:latest
+    container_name: rq-dashboard
+    depends_on:
+      redis:
+        condition: service_started
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379/0
+    ports:
+      - "9181:9181"
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL

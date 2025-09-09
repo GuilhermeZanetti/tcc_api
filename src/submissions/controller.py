@@ -6,7 +6,7 @@ from src.contrib.documentation import (
     UnprocessableEntityErrorResponse,
     InternalServerErrorResponse,
 )
-from src.contrib.security import validar_jwt
+from src.contrib.security import validar_jwt_integrador
 from src.submissions.schemas import (
     SubmissionCollectionResponse,
     SubmissionIn,
@@ -14,9 +14,9 @@ from src.submissions.schemas import (
 )
 from src.submissions.usecases import SubmissionUseCase
 from src.contrib.exceptions import ObjectNotFound, ValidationError
+from src.authentication.permissions import Permissions
 
-
-router = APIRouter(tags=['submissions'], prefix='/v0/submissions', dependencies=[Depends(validar_jwt)])
+router = APIRouter(tags=['submissions'], prefix='/v0/submissions')
 
 
 @router.post(
@@ -31,10 +31,12 @@ router = APIRouter(tags=['submissions'], prefix='/v0/submissions', dependencies=
         422: {'model': UnprocessableEntityErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt_integrador([Permissions.CREATE_SUBMISSIONS.value]))]
 )
 async def post(
     use_case: SubmissionUseCase = Depends(),
     submission_in: SubmissionIn = Body(...),
+    
 ) -> SubmissionOut:
     try:
         submission = await use_case.create(submission_in=submission_in)
@@ -62,6 +64,7 @@ async def post(
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt_integrador([Permissions.READ_SUBMISSIONS.value]))]
 )
 async def get(
     id: UUID4,
@@ -84,6 +87,7 @@ async def get(
         200: {'model': SubmissionCollectionResponse},
         500: {'model': InternalServerErrorResponse},
     },
+    dependencies=[Depends(validar_jwt_integrador([Permissions.READ_SUBMISSIONS.value]))]
 )
 async def query(
     use_case: SubmissionUseCase = Depends(),
