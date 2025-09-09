@@ -108,3 +108,22 @@ async def query(
     problems = await use_case.query()
 
     return problems
+
+@router.delete(
+    '/{id}',
+    summary='Delete a Problem by id',
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        204: {'description': 'Problem deleted successfully'},
+        404: {'model': NotFoundErrorResponse},
+        500: {'model': InternalServerErrorResponse},
+    },
+)
+async def delete(
+    id: UUID4,
+    use_case: ProblemUseCase = Depends(),
+) -> None:
+    try:
+        await use_case.delete(id=id)
+    except ObjectNotFound:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

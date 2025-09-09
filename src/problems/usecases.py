@@ -71,3 +71,11 @@ class ProblemUseCase:
             )
 
         return problem_updated
+
+    async def delete(self, id: UUID4) -> None:
+        problem = await self.get(id=id)
+
+        async with await self.repository.start_transaction() as transaction:
+            await self.repository.delete(
+                filter={'id': problem.id}, session=transaction.session
+            )
