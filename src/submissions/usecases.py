@@ -65,24 +65,24 @@ class SubmissionUseCase:
                 message='Invalid content, the content must be a valid base64.', field='content'
             )
 
-        submission_out = SubmissionOut(
-            id=str(uuid.uuid4()),
+        submission_model = SubmissionModel(
+            id=uuid.uuid4(),
             created_at=datetime.now(timezone.utc),
             status='PENDING',
             **submission_in.model_dump(),
         )
-
-        submission_model = SubmissionModel(**submission_out.model_dump())
 
         async with await self.repository.start_transaction() as transaction:
             await self.repository.insert(
                 model=submission_model, session=transaction.session
             )
 
+        submission_out = SubmissionOut.model_validate(submission_model)
+
         queue_manager.enqueue(
             sync_process_submission,
             submission_data=submission_out.model_dump(),
-            problem_data=problem
+            problem_data=problem,
         )
 
         return submission_out

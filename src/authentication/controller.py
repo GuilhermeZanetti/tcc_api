@@ -3,7 +3,6 @@ from src.authentication.models import IntegratorModel
 from src.authentication.schemas import IntegratorAuthRequest, IntegratorAuthResponse
 from src.authentication.repositories import IntegratorRepository
 from src.authentication.usecases import AuthenticationUseCase
-from src.contrib.hash import HashUtils
 from src.contrib.repository.mongodb import mongodb_client
 from src.contrib.security import gerar_token_integrador
 

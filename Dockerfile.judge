@@ -29,6 +29,7 @@ ENV TLE_TIMEOUT=30
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --install-dir /usr/share/dotnet \
     && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
 
+ENV PATH="/usr/share/dotnet:$PATH"
 RUN dotnet tool install -g dotnet-script
 
 RUN chown -R judge:judge /app

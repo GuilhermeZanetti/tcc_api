@@ -1,6 +1,4 @@
-from typing import Optional
 
-from src.authentication.models import IntegratorModel
 from fastapi import Depends
 from motor.core import AgnosticClient
 

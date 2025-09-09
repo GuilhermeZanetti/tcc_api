@@ -55,7 +55,7 @@ class Migration(BaseMigration):
 
         self.authentication.insert_one(initial_record_data)
         
-        print(f"Registro 'Maratona' inserido com sucesso!")
+        print("Registro 'Maratona' inserido com sucesso!")
 
         
         print("Migration successful: 'authentication' collection and index created.")

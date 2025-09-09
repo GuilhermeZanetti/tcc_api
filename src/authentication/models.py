@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 from typing import List
 
 from pydantic import UUID4, BaseModel, Field
-from src.contrib.models.base import BaseModelMixin
 
 class IntegratorModel(BaseModel):
     id: UUID4 = Field(..., alias="_id", title='Identifier id') 
