@@ -260,7 +260,18 @@ class CodeRunner:
 class PythonRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run Python code."""
-        return self._execute("python {0}", code, data_input, settings.TLE_TIMEOUT)
+        # Wrap the code with input handling to prevent EOF errors
+        wrapper_code = f'''import sys
+from io import StringIO
+
+# Prepare input data
+input_data = """{Base64Utils.decode(data_input).decode()}"""
+sys.stdin = StringIO(input_data)
+
+# Original code starts here
+{code.decode() if isinstance(code, bytes) else code}'''
+        
+        return self._execute("python {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT)
 
 
 class CRunner(CodeRunner):
@@ -326,7 +337,7 @@ class PHPRunner(CodeRunner):
                              code, 
                              data_input, 
                              settings.TLE_TIMEOUT, 
-                             file_suffix=".php"
+                             file_suffix=".php",
         )
 
 

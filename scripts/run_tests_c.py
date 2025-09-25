@@ -12,7 +12,7 @@ API_BASE_URL = "http://127.0.0.1:8000/v0"
 # The absolute path is /Users/zanetti/projetos/tcc_api/scripts/fracoes/fracoes_py/\
 SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
 PROBLEM_ID = "f12e67dd-8613-44e8-9a53-bc9c9290f9eb"  # Fake problem ID as requested
-LANGUAGE = "py"
+LANGUAGE = "c"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
