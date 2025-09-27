@@ -1,40 +1,35 @@
-from pydantic import Field, ConfigDict
+from pydantic import Field, ConfigDict, BaseModel
 from typing import List
 
 from src.contrib.collection_response import CollectionResponse
 from src.contrib.schemas import Model, OutMixin
-from src.problems.examples import (
-    problem_collection_response_example,
-    problem_in_example,
-    problem_out_example,
-)
 
+class TestCase(BaseModel):
+    input_lines: List[str] = Field(title='List of input lines for the test case', default_factory=list)
+    output_lines: List[str] = Field(title='List of expected output lines for the test case', default_factory=list)
 
 class Problem(Model):
     name: str = Field(title='Problem name')
     description: str = Field(title='Problem description')
-    data_entries: List[str] = Field(title='Problem data entries', default_factory=list)
+    test_cases: List[TestCase] = Field(title='List of test cases for the problem', default_factory=list)
     entry_description: str = Field(title='Problem entry description')
-    data_outputs: List[str] = Field(title='Problem data outputs', default_factory=list)
     output_description: str = Field(title='Problem output description')
 
 
 class ProblemIn(Problem):
-    model_config = ConfigDict(json_schema_extra={'example': problem_in_example})
+    pass
 
 
 class ProblemOut(Problem, OutMixin):
-    model_config = ConfigDict(json_schema_extra={'example': problem_out_example})
+    pass
 
 
 class ProblemCollectionResponse(CollectionResponse):
-    model_config = ConfigDict(json_schema_extra={'example': problem_collection_response_example})
-
+    pass
 
 class ProblemUpdate(Model):
     name: str | None = Field(title='Problem name', default=None)
     description: str | None = Field(title='Problem description', default=None)
-    data_entries: List[str] | None = Field(title='Problem data entries', default=None)
+    test_cases: List[TestCase] | None = Field(title='List of test cases for the problem', default=None)
     entry_description: str | None = Field(title='Problem entry description', default=None)
-    data_outputs: List[str] | None = Field(title='Problem data outputs', default=None)
     output_description: str | None = Field(title='Problem output description', default=None)

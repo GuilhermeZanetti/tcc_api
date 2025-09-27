@@ -35,19 +35,21 @@ class Judge:
 
         code = Base64Utils.decode(submission.content)
 
-        test_cases = self._parse_test_cases(data)
+        test_cases = data.get('test_cases', [])
         results = []
 
         for test_case in test_cases:
-            response = runner.run(code, test_case['input'])
-            expected_output = self._decode_output(test_case['output'])
-            status = self._evaluate(response, expected_output)
+            input_str = "\n".join(test_case.get('input_lines', []))
+            expected_output_str = "\n".join(test_case.get('output_lines', []))
+
+            response = runner.run(code, input_str)
+            status = self._evaluate(response, expected_output_str)
             results.append(status)
 
             if status != STATUS_ACCEPTED:
                 break
-
-        final_status = min(results, key=lambda x: self._get_status_priority(x))
+        
+        final_status = min(results, key=lambda x: self._get_status_priority(x)) if results else STATUS_COMPILATION_ERROR
         await self._update_submission_status(submission.id, final_status)
 
     def _get_runner(self, language_type: str):
@@ -66,83 +68,13 @@ class Judge:
         }
         return runners.get(language_type)
 
-    def _decode_output(self, encoded_output: str) -> str:
-        """Decode the expected output from Base64 encoding."""
-        return Base64Utils.decode(encoded_output).decode('unicode_escape')
-
-    def _parse_test_cases(self, data: dict) -> List[Dict[str, str]]:
-        """Parse test cases from the data."""
-        if isinstance(data.get('data_entries'), list) and isinstance(data.get('data_outputs'), list):
-            return [{'input': inp, 'output': out} for inp, out in zip(data['data_entries'], data['data_outputs'])]
-        return [{'input': data.get('data_entries', [''])[0], 'output': data.get('data_outputs', [''])[0]}]
-
     def _is_code_safe(self, code: str) -> bool:
         """
         Check if the code is safe to execute.
         """
         dangerous_patterns = [
-            r'import\s+os',
-            r'import\s+subprocess',
-            r'import\s+sys',
-            r'__import__',
-            r'eval\(',
-            r'exec\(',
-            r'open\(',
-            r'file\(',
-            r'system\(',
-            r'popen\(',
-            r'socket\(',
-            r'fork\(',
-            r'kill\(',
-            r'rm\(',
-            r'del\(',
-            r'remove\(',
-            r'unlink\(',
-            r'chmod\(',
-            r'chown\(',
-            r'mkdir\(',
-            r'makedirs\(',
-            r'rmdir\(',
-            r'removedirs\(',
-            r'rename\(',
-            r'replace\(',
-            r'symlink\(',
-            r'link\(',
-            r'stat\(',
-            r'lstat\(',
-            r'fstat\(',
-            r'utime\(',
-            r'access\(',
-            r'chflags\(',
-            r'lchflags\(',
-            r'chroot\(',
-            r'lchown\(',
-            r'walk\(',
-            r'listdir\(',
-            r'scandir\(',
-            r'path\(',
-            r'abspath\(',
-            r'realpath\(',
-            r'relpath\(',
-            r'expanduser\(',
-            r'expandvars\(',
-            r'normpath\(',
-            r'curdir\(',
-            r'pardir\(',
-            r'sep\(',
-            r'linesep\(',
-            r'pathsep\(',
-            r'devnull\(',
-            r'extsep\(',
-            r'altsep\(',
-            r'curdir\(',
-            r'pardir\(',
-            r'sep\(',
-            r'linesep\(',
-            r'pathsep\(',
-            r'devnull\(',
-            r'extsep\(',
-            r'altsep\(',
+            r'import\s+os', r'import\s+subprocess', r'import\s+sys', r'__import__',
+            r'eval\(', r'exec\(', r'open\(', r'file\(', r'system\(', r'popen\('
         ]
 
         for pattern in dangerous_patterns:
@@ -178,22 +110,19 @@ class Judge:
 
         if error:
             error_str = error.decode()
-            # In competitive programming, it's common for a program to read until it hits EOF.
-            # We can treat an EOFError as a valid way to terminate and still check the output.
             if "EOFError: EOF when reading a line" not in error_str:
                 if "MemoryError" in error_str or "out of memory" in error_str:
                     return STATUS_MEMORY_LIMIT_EXCEEDED
                 
-                print("Runtime Error:\t" + error_str)
-                
+                print(f"Runtime Error:\t{error_str}")
                 return STATUS_RUNTIME_ERROR
 
         if not output:
-            return STATUS_COMPILATION_ERROR
+            # Se o erro for EOF não consideramos como falha.
+            if not error:
+                return STATUS_COMPILATION_ERROR
 
-        output_decoded = output.decode()
-        print(f"Output: {output_decoded}")
-        print(f"Expected Output:{expected_output}")
+        output_decoded = output.decode() if output else ""
         
         if settings.IGNORE_TRAILING_WHITESPACE:
             output_decoded = '\n'.join(line.rstrip() for line in output_decoded.splitlines())
@@ -210,7 +139,7 @@ class Judge:
         if output_decoded == expected_output:
             return STATUS_ACCEPTED
 
-        if output_decoded.replace('\n', '') == expected_output.replace('\n', ''):
+        if output_decoded.strip() == expected_output.strip():
             return STATUS_PRESENTATION_ERROR
 
         return STATUS_WRONG_ANSWER
@@ -229,10 +158,7 @@ class CodeRunner:
         """
         Execute the given command with the provided code and input, returning the output or timeout status.
         """
-        # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
-        decoded_str = Base64Utils.decode(data_input).decode('utf-8')
-        corrected_str = decoded_str.replace(r'\n', '\n')
-        data_entry = corrected_str.encode('utf-8')
+        data_entry = data_input.encode('utf-8')
 
         with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as tmp_file:
             tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
@@ -268,26 +194,23 @@ class CodeRunner:
 class PythonRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run Python code."""
-        # The input data is corrected to handle escaped newlines (r'\n' -> '\n')
-        corrected_input = Base64Utils.decode(data_input).decode().replace(r'\n', '\n')
-        # Wrap the code with input handling to prevent EOF errors
         wrapper_code = f"""import sys
 from io import StringIO
 
 # Prepare input data
-input_data = '''{corrected_input}'''
+input_data = '''{data_input}'''
 sys.stdin = StringIO(input_data)
 
 # Original code starts here
 {code.decode() if isinstance(code, bytes) else code}"""
         
-        return self._execute("python {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT)
+        # Pass an empty string for data_input to _execute, as it's handled in the wrapper.
+        return self._execute("python -u {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT)
 
 
 class CRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run C code."""
-        # {0} = source file, {1} = binary file (without extension)
         return self._execute(
             "gcc -o {1}_exec {0} -lm && {1}_exec && rm {1}_exec",
             code,
@@ -329,10 +252,7 @@ class JavaRunner(CodeRunner):
                 stderr=subprocess.PIPE,
                 shell=True,
             )
-            # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
-            decoded_str = Base64Utils.decode(data_input).decode('utf-8')
-            corrected_str = decoded_str.replace(r'\n', '\n')
-            data_entry = corrected_str.encode('utf-8')
+            data_entry = data_input.encode('utf-8')
             try:
                 output, error = process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                 return output, error
@@ -369,20 +289,14 @@ class CSharpRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run C# code. Detecta se é script (dotnet-script) ou programa tradicional (dotnet run)."""
         code_str = code.decode() if isinstance(code, bytes) else code
-        # Detecta se é um programa tradicional com static void Main
         if re.search(r'static\s+void\s+Main', code_str):
-            # Programa tradicional: cria projeto temporário
-            
             with tempfile.TemporaryDirectory() as tmp_dir:
                 proj_dir = os.path.join(tmp_dir, "App")
                 os.makedirs(proj_dir)
-                # Cria projeto
                 subprocess.run(["dotnet", "new", "console", "--output", proj_dir, "--use-program-main"], check=True)
-                # Sobrescreve Program.cs
                 code_path = os.path.join(proj_dir, "Program.cs")
                 with open(code_path, "w") as f:
                     f.write(code_str)
-                # Roda o projeto
                 command = f"dotnet run --nologo --property:NoWarn=CS* --property:WarningsAsErrors=false --project {proj_dir}"
                 process = subprocess.Popen(
                     command,
@@ -391,10 +305,7 @@ class CSharpRunner(CodeRunner):
                     stderr=subprocess.PIPE,
                     shell=True,
                 )
-                # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
-                decoded_str = Base64Utils.decode(data_input).decode('utf-8')
-                corrected_str = decoded_str.replace(r'\n', '\n')
-                data_entry = corrected_str.encode('utf-8')
+                data_entry = data_input.encode('utf-8')
                 try:
                     output, error = process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                     return output, error

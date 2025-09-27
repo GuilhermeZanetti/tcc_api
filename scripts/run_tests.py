@@ -10,7 +10,7 @@ import requests
 API_BASE_URL = "http://127.0.0.1:8000/v0"
 #SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
 SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/G"
-PROBLEM_ID = "af91ad9d-8b61-475a-bd28-0107477a4741"
+PROBLEM_ID = "aa916ed3-f232-4917-ada3-8305d1902d04"
 LANGUAGE = "py"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
