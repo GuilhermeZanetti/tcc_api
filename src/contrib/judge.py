@@ -39,6 +39,7 @@ class Judge:
         results = []
 
         for test_case in test_cases:
+            print("Input:", test_case['input'])
             response = runner.run(code, test_case['input'])
             expected_output = self._decode_output(test_case['output'])
             status = self._evaluate(response, expected_output)
@@ -177,18 +178,21 @@ class Judge:
             return STATUS_TIME_LIMIT_EXCEEDED
 
         if error:
-            if "MemoryError" in error.decode() or "out of memory" in error.decode():
-                return STATUS_MEMORY_LIMIT_EXCEEDED
-            
-            print("Runtime Error:\t" + error.decode())
-            
-            return STATUS_RUNTIME_ERROR
+            error_str = error.decode()
+            if "EOFError: EOF when reading a line" not in error_str:
+                if "MemoryError" in error_str or "out of memory" in error_str:
+                    return STATUS_MEMORY_LIMIT_EXCEEDED
+                
+                print("Runtime Error:\t" + error_str)
+                
+                return STATUS_RUNTIME_ERROR
 
         if not output:
             return STATUS_COMPILATION_ERROR
 
         output_decoded = output.decode()
-        print(f"Output:\t{output_decoded}")
+        print(f"Output: {output_decoded}")
+        print(f"Expected Output:{expected_output}")
         
         if settings.IGNORE_TRAILING_WHITESPACE:
             output_decoded = '\n'.join(line.rstrip() for line in output_decoded.splitlines())
@@ -328,16 +332,16 @@ class JavaRunner(CodeRunner):
                 return "TLE", None
             except Exception as e:
                 return None, str(e).encode()
-            
-            
+
+
 class PHPRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run PHP code."""
         return self._execute("php {0}", 
-                             code, 
-                             data_input, 
-                             settings.TLE_TIMEOUT, 
-                             file_suffix=".php",
+                    code, 
+                    data_input, 
+                    settings.TLE_TIMEOUT, 
+                    file_suffix=".php",
         )
 
 
