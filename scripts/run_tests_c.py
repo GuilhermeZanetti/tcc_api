@@ -8,10 +8,9 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-# The user provided @scripts/fracoes/fracoes_py/** as the directory
-# The absolute path is /Users/zanetti/projetos/tcc_api/scripts/fracoes/fracoes_py/\
-SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
-PROBLEM_ID = "f12e67dd-8613-44e8-9a53-bc9c9290f9eb"  # Fake problem ID as requested
+#SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
+SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/G"
+PROBLEM_ID = "af91ad9d-8b61-475a-bd28-0107477a4741"
 LANGUAGE = "c"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
@@ -102,7 +101,7 @@ def main():
     print(f"Target directory: {SUBMISSIONS_DIR}")
 
     for filename in sorted(os.listdir(SUBMISSIONS_DIR)):
-        if filename.endswith(".py"):
+        if filename.endswith(".c"):
             file_path = os.path.join(SUBMISSIONS_DIR, filename)
             submission_id = submit_code(file_path, args.token)
             if submission_id:

@@ -30,7 +30,7 @@ def gerar_token_integrador(integrator_id: str, permissions: list[str]):
     payload = {
         "sub": integrator_id,
         "permissions": permissions,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=60)
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=1440)
     }
     token = jwt.encode(payload, settings.API_KEY_MASTER.get_secret_value(), algorithm=AUTH_ALGORITHM)
     return token

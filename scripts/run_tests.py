@@ -8,10 +8,9 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-# The user provided @scripts/fracoes/fracoes_py/** as the directory
-# The absolute path is /Users/zanetti/projetos/tcc_api/scripts/fracoes/fracoes_py/\
-SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
-PROBLEM_ID = "f12e67dd-8613-44e8-9a53-bc9c9290f9eb"  # Fake problem ID as requested
+#SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
+SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/G"
+PROBLEM_ID = "af91ad9d-8b61-475a-bd28-0107477a4741"
 LANGUAGE = "py"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30

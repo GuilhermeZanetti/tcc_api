@@ -39,7 +39,6 @@ class Judge:
         results = []
 
         for test_case in test_cases:
-            print("Input:", test_case['input'])
             response = runner.run(code, test_case['input'])
             expected_output = self._decode_output(test_case['output'])
             status = self._evaluate(response, expected_output)
@@ -179,6 +178,8 @@ class Judge:
 
         if error:
             error_str = error.decode()
+            # In competitive programming, it's common for a program to read until it hits EOF.
+            # We can treat an EOFError as a valid way to terminate and still check the output.
             if "EOFError: EOF when reading a line" not in error_str:
                 if "MemoryError" in error_str or "out of memory" in error_str:
                     return STATUS_MEMORY_LIMIT_EXCEEDED
@@ -228,7 +229,10 @@ class CodeRunner:
         """
         Execute the given command with the provided code and input, returning the output or timeout status.
         """
-        data_entry = Base64Utils.decode(data_input)
+        # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
+        decoded_str = Base64Utils.decode(data_input).decode('utf-8')
+        corrected_str = decoded_str.replace(r'\n', '\n')
+        data_entry = corrected_str.encode('utf-8')
 
         with tempfile.NamedTemporaryFile(suffix=file_suffix, delete=False) as tmp_file:
             tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
@@ -264,16 +268,18 @@ class CodeRunner:
 class PythonRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run Python code."""
+        # The input data is corrected to handle escaped newlines (r'\n' -> '\n')
+        corrected_input = Base64Utils.decode(data_input).decode().replace(r'\n', '\n')
         # Wrap the code with input handling to prevent EOF errors
-        wrapper_code = f'''import sys
+        wrapper_code = f"""import sys
 from io import StringIO
 
 # Prepare input data
-input_data = """{Base64Utils.decode(data_input).decode()}"""
+input_data = '''{corrected_input}'''
 sys.stdin = StringIO(input_data)
 
 # Original code starts here
-{code.decode() if isinstance(code, bytes) else code}'''
+{code.decode() if isinstance(code, bytes) else code}"""
         
         return self._execute("python {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT)
 
@@ -323,7 +329,10 @@ class JavaRunner(CodeRunner):
                 stderr=subprocess.PIPE,
                 shell=True,
             )
-            data_entry = Base64Utils.decode(data_input)
+            # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
+            decoded_str = Base64Utils.decode(data_input).decode('utf-8')
+            corrected_str = decoded_str.replace(r'\n', '\n')
+            data_entry = corrected_str.encode('utf-8')
             try:
                 output, error = process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                 return output, error
@@ -382,7 +391,10 @@ class CSharpRunner(CodeRunner):
                     stderr=subprocess.PIPE,
                     shell=True,
                 )
-                data_entry = Base64Utils.decode(data_input)
+                # Decode from base64, fix escaped newlines, and re-encode to bytes for the process.
+                decoded_str = Base64Utils.decode(data_input).decode('utf-8')
+                corrected_str = decoded_str.replace(r'\n', '\n')
+                data_entry = corrected_str.encode('utf-8')
                 try:
                     output, error = process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                     return output, error
