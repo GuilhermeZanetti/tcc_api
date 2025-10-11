@@ -12,6 +12,8 @@ from src.submissions.schemas import (
     SubmissionIn,
     SubmissionOut,
 )
+from src.submissions.schemas import SubmissionOut, SubmissionUpdateStatusIn
+from src.submissions.usecases import SubmissionUseCase, ObjectNotFound
 from src.submissions.usecases import SubmissionUseCase
 from src.contrib.exceptions import ObjectNotFound, ValidationError
 from src.authentication.permissions import Permissions
@@ -95,3 +97,32 @@ async def query(
     submissions = await use_case.query()
 
     return submissions
+
+@router.put(
+    '/{id}',
+    summary='Update a submission status by id',
+    status_code=status.HTTP_200_OK,
+    response_model=SubmissionOut,
+ 
+)
+async def put(
+    id: UUID4,
+    submission_in: SubmissionUpdateStatusIn = Body(...),
+    use_case: SubmissionUseCase = Depends(),
+) -> SubmissionOut:
+    print(f"Controller: Recebido id={id} e novo status={submission_in.status}")
+    try:
+     
+        submission = await use_case.update_status(id=id, new_status=submission_in.status) 
+    
+    except ObjectNotFound:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=exc.errors(),
+        )
+
+    return submission
