@@ -354,6 +354,7 @@ class CSharpRunner(CodeRunner):
             with tempfile.TemporaryDirectory() as tmp_dir:
                 proj_dir = os.path.join(tmp_dir, "App")
                 os.makedirs(proj_dir)
+
                 subprocess.run(
                     [
                         "dotnet",
@@ -364,11 +365,16 @@ class CSharpRunner(CodeRunner):
                         "--use-program-main",
                     ],
                     check=True,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
                 )
+
                 code_path = os.path.join(proj_dir, "Program.cs")
                 with open(code_path, "w") as f:
                     f.write(code_str)
-                command = f"dotnet run --nologo --property:NoWarn=CS* --property:WarningsAsErrors=false --project {proj_dir}"
+
+                command = f"dotnet run --project {proj_dir} --nologo --verbosity quiet --property:NoWarn=nullable"
+
                 process = subprocess.Popen(
                     command,
                     stdin=subprocess.PIPE,
