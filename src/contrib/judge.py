@@ -394,10 +394,11 @@ class CSharpRunner(CodeRunner):
                 except Exception as e:
                     return None, str(e).encode()
         else:
-            return self._execute(
+            output, error = self._execute(
                 "dotnet-script {0} --no-logo 2>&1 | grep -v 'warning CS'",
                 code,
                 data_input,
                 settings.TLE_TIMEOUT,
                 file_suffix=".cs",
             )
+            return output, error
