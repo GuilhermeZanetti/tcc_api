@@ -135,3 +135,6 @@ dmypy.json
 .pyre/
 .DS_Store
 scripts/csharpProject/bin/*
+tcc_api.sln
+scripts/csharpProject/obj/Debug/net9.0/csharpProject.AssemblyInfo.cs
+scripts/csharpProject/obj/Debug/net9.0/csharpProject.AssemblyInfoInputs.cache
