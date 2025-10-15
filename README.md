@@ -15,6 +15,7 @@ python3 -m venv venv
 
 ```
 source venv/bin/activate
+.\venv\Scripts\activate (Windows)
 ```
 
 1. Dentro do ambiente, instale o **poetry** por meio do **pip install**
