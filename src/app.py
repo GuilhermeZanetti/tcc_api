@@ -8,7 +8,11 @@ from src.contrib.repository.mongodb_utils import (
     close_mongo_connection,
     connect_to_mongo,
 )
+from src.logging_config import setup_logging
+from src.contrib.middleware.audit import AuditMiddleware
 from src.utils import load_identifier
+
+setup_logging()
 
 
 class Application(FastAPI):
@@ -21,6 +25,8 @@ class Application(FastAPI):
             *args,
             **kwargs,
         )
+
+        self.add_middleware(AuditMiddleware)
 
         self._load_routes(routers)
 
