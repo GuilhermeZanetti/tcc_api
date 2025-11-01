@@ -4,6 +4,15 @@ services:
       context: .
       dockerfile: Dockerfile.judge
     container_name: judge
+    labels:
+      - "logging=loki"
+      - "job=judge/api"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
     volumes:
       - ./entrypoint.sh:/app/entrypoint.sh
     entrypoint: /app/entrypoint.sh
@@ -83,6 +92,15 @@ services:
       context: .
       dockerfile: Dockerfile.judge
     container_name: worker
+    labels:
+      - "logging=loki"
+      - "job=judge/worker"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
     volumes:
       - ./entrypoint.sh:/app/entrypoint.sh
     entrypoint: /app/entrypoint.sh
@@ -131,6 +149,28 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: always
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: always
 
 volumes:
   mongodb_data:
