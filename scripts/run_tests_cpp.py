@@ -9,8 +9,8 @@ import requests
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
 #SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
-SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/G"
-PROBLEM_ID = "aa916ed3-f232-4917-ada3-8305d1902d04"
+SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-status-problem-language/NO - Compilation error/A/C-C++"
+PROBLEM_ID = "5fc227ac-7eb5-4361-8371-3102e30c5179"
 LANGUAGE = "cpp"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30

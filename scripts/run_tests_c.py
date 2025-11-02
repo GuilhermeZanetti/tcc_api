@@ -1,4 +1,3 @@
-
 import argparse
 import base64
 import os
@@ -8,14 +7,15 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-#SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
-SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/G"
-PROBLEM_ID = "aa916ed3-f232-4917-ada3-8305d1902d04"
+# SUBMISSIONS_DIR = "/Volumes/znt-apfs/z-others/faculdade/fracoes/fracoes_py"
+SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-status-problem-language/NO - Compilation error/A/C-C++"
+PROBLEM_ID = "5fc227ac-7eb5-4361-8371-3102e30c5179"
 LANGUAGE = "c"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
 # --- Helper Functions ---
+
 
 def submit_code(source_path: str, token: str) -> str | None:
     """Reads a source file, encodes it, and submits it to the API."""
@@ -92,9 +92,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Submit and validate code submissions for the programming judge API."
     )
-    parser.add_argument(
-        "token", help="The JWT authentication token for the API."
-    )
+    parser.add_argument("token", help="The JWT authentication token for the API.")
     args = parser.parse_args()
 
     print("--- Starting Submission Test ---")

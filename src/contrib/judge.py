@@ -119,6 +119,9 @@ class Judge:
         """
         output, error = response if response != "TLE" else (None, None)
 
+        print(f"Output:\t{output}")
+        print(f"Error:\t{error}")
+
         if response == "TLE":
             return STATUS_TIME_LIMIT_EXCEEDED
 
