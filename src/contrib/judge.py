@@ -39,14 +39,21 @@ class Judge:
         results = []
 
         for test_case in test_cases:
-            input_str = "\n".join(test_case.get("input_lines", []))
-            expected_output_str = "\n".join(test_case.get("output_lines", []))
+            try:
+                input_str = "\n".join(test_case.get("input_lines", []))
+                expected_output_str = "\n".join(test_case.get("output_lines", []))
 
-            response = runner.run(code, input_str)
-            status = self._evaluate(response, expected_output_str)
-            results.append(status)
+                response = runner.run(code, input_str)
+                print(f"\nResponse: {response}")
 
-            if status != STATUS_ACCEPTED:
+                status = self._evaluate(response, expected_output_str)
+                results.append(status)
+
+                if status != STATUS_ACCEPTED:
+                    break
+            except Exception as e:
+                print(e)
+                results.append(STATUS_COMPILATION_ERROR)
                 break
 
         final_status = (
@@ -122,16 +129,29 @@ class Judge:
         print(f"Output:\t{output}")
         print(f"Error:\t{error}")
 
-        if response == "TLE":
+        if response == "TLE" or output == "TLE":
             return STATUS_TIME_LIMIT_EXCEEDED
 
         if error:
-            error_str = error.decode()
-            if "EOFError: EOF when reading a line" not in error_str:
-                if "MemoryError" in error_str or "out of memory" in error_str:
-                    return STATUS_MEMORY_LIMIT_EXCEEDED
+            try:
+                error_str = error.decode()
+                if "EOFError: EOF when reading a line" not in error_str:
+                    if "MemoryError" in error_str or "out of memory" in error_str:
+                        return STATUS_MEMORY_LIMIT_EXCEEDED
 
-                print(f"Runtime Error:\t{error_str}")
+                    print(f"Runtime Error:\t{error_str}")
+                    return STATUS_RUNTIME_ERROR
+            except AttributeError as e:
+                print('AttributeError\n')
+                print(e)
+                print("=========")
+                print(f"Error: {error}")
+                return STATUS_RUNTIME_ERROR
+            except Exception as e:
+                print('Erro desconhecido ao decodificar error\n')
+                print(e)
+                print("=========")
+                print(f"Error: {error}")
                 return STATUS_RUNTIME_ERROR
 
         if not output:
