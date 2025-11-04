@@ -6,7 +6,7 @@ import requests
 API_URL = "http://127.0.0.1:8000/v0/problems"
 
 # Diretório contendo os arquivos JSON dos problemas
-JSON_DIR = "json-create-problems"
+JSON_DIR = "scripts/json-create-problems"
 
 # Token JWT para autenticação
 # Você pode obter o token fazendo uma requisição POST para http://127.0.0.1:8000/auth/integrator-token
