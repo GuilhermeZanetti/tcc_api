@@ -1,0 +1,36 @@
+{
+  "name": "Problema D: ENEM",
+  "description": "O Exame Nacional do Ensino Médio (ENEM) é uma das principais formas de acesso ao ensino superior no Brasil, avaliando milhões de estudantes anualmente em diversas áreas do conhecimento.\n\nEm 2025, segundo notícia publicada pela Agência Gov, mais de 5,3 milhões de candidatos realizaram a inscrição para o exame.\n\nDiante desse volume de dados, é essencial que os sistemas responsáveis pelo processamento e consulta das notas sejam eficientes, especialmente durante o período de divulgação dos resultados.\n\nVocê foi contratado para projetar um módulo de armazenamento e consulta de notas, que será integrado ao sistema principal do ENEM.\n\nInicialmente, os dados dos participantes são inseridos em memória na ordem de inscrição — o primeiro inscrito é inserido primeiro, o segundo em seguida, e assim sucessivamente.\n\nApós o carregamento inicial, o sistema deve ser capaz de localizar rapidamente o registro de um estudante específico, consultando suas notas a partir de seu número de inscrição.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "8",
+        "6666 542.1",
+        "4040 777.2",
+        "98000 905.4",
+        "2020 95.5",
+        "7777 59.3",
+        "8888 152.59",
+        "1010 143.7",
+        "3030 999.91",
+        "6",
+        "3030",
+        "98000",
+        "7777",
+        "8888",
+        "0005",
+        "7777"
+      ],
+      "output_lines": [
+        "999.91",
+        "905.40",
+        "59.30",
+        "152.59",
+        "INSCRICAO INVALIDA",
+        "59.30"
+      ]
+    }
+  ],
+  "entry_description": "A entrada é composta por duas partes:\n\n1. Um número inteiro N (1 ≤ N ≤ 105), representando a quantidade de alunos cadastrados. Em seguida, seguem N linhas, cada uma contendo:\n\nUm número inteiro I (1 ≤ I ≤ 105): número de inscrição do aluno;\n\nUm número real Nf (0 ≤ Nf ≤ 1000): nota final obtida pelo aluno no exame.\n\n2. Um número inteiro Q (1 ≤ Q ≤ 105), representando a quantidade de consultas a serem realizadas. Em seguida, seguem Q linhas, cada uma contendo um número inteiro IC (1 ≤ IC ≤ 105), correspondente ao número de inscrição a ser consultado.",
+  "output_description": "A saída terá Q linhas, uma para cada consulta, em que o programa deve imprimir a nota correspondente ao número de inscrição informado, com duas casas decimais.\n\nSe o número de inscrição não existir entre os registros cadastrados, deve ser exibida a mensagem: INSCRICAO INVALIDA."
+}

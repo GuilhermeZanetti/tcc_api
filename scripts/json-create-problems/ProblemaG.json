@@ -1,0 +1,37 @@
+{
+  "name": "Problema G: Caminhos do Reino de Mathland",
+  "description": "Mathland é um reino de riqueza imensurável, cujo rei Ivanowisk é muito querido por todos que lá habitam. O Reino é formado por diversas cidades conectadas por estradas por onde circulam carruagens maravilhosas. Cada estrada é bidirecional, liga duas cidades distintas e permite o deslocamento de aventureiros entre elas em ambos os sentidos.\n\nCada cidade é reconhecida por um número que indica a ordem em que elas foram sendo criadas. A cidade mais antiga é a número um, a segunda mais antiga é número dois e assim sucessivamente. Todos os habitantes do reino estão bastante acostumados a reconhecer as cidades pelo seu número de criação.\n\nO Conselho Real deseja criar um sistema para mapear as conexões diretas entre as cidades do reino.\n\nSua missão é ajudar o Conselho a desenvolver o programa que fará as análises e responderá às perguntas solicitadas.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "7",
+        "11",
+        "1 2 80",
+        "1 3 33",
+        "1 5 21",
+        "2 3 5",
+        "2 4 21",
+        "3 4 25",
+        "3 5 19",
+        "4 1 50",
+        "4 6 10",
+        "6 7 40",
+        "7 1 50",
+        "3 6"
+      ],
+      "output_lines": [
+        "1 5",
+        "2 3",
+        "3 4",
+        "4 4",
+        "5 2",
+        "6 2",
+        "7 2",
+        "354",
+        "3 6 Sem conexao"
+      ]
+    }
+  ],
+  "entry_description": "A entrada é composta por:\n\n1. Na primeira linha está um número inteiro N (1 ≤ N ≤ 20), representando o total de cidades;\n2. A segunda linha contém um número inteiro E (1 ≤ E ≤ 100), representando a quantidade de estradas do reino;\n3. Uma relação de E linhas, cada uma delas contendo;\na) Cidade de origem\nb) Cidade de destino\nc) Distância entre origem e destino (em quilômetros).\n4. A última contém o identificador de duas cidades do reino, para descobrir se existe uma ligação direta entre elas, ou seja, se existe uma estrada ligando as duas cidades sem passar por nenhuma outra entre elas.",
+  "output_description": "A saída de dados deve começar apresentando N linhas, cada uma delas com dois valores inteiros separados por um espaço em branco. O primeiro valor representa o identificador da cidade. O segundo valor indica quantas estradas partem/chegam na cidade. As cidades devem ser apresentadas em ordem crescente, sendo o menor identificador na primeira linha.\n\nNa próxima linha, o programa deve exibir a quilometragem total de todas as estradas do reino.\n\nA última linha deve apresentar mensagem sobre ligação direta entre duas cidades com: identificador da primeira cidade selecionada, espaço em branco, identificador da outra cidade selecionada, espaço em branco e mensagem de ligação. A mensagem deve ser: “Com conexao” ou “Sem conexao”."
+}

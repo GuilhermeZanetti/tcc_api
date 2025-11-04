@@ -1,0 +1,27 @@
+{
+  "name": "Problema I: Encantamento de Palavras",
+  "description": "Os magos de Waterdeep estão praticando um novo tipo de magia verbal chamado Encantamento de Palavras, uma técnica usada para combinar sílabas mágicas de diferentes grimórios e criar novos feitiços.\n\nCada encantamento é formado pela intercalação das letras de dois grimórios: um antigo e um recente. O mago deve sempre começar com a primeira letra do grimório antigo, depois a primeira letra do recente, depois a segunda do antigo, a segunda do recente, e assim sucessivamente.\n\nSe um dos grimórios tiver mais letras do que o outro, as letras restantes devem ser adicionadas ao final do encantamento.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "6",
+        "agua benta",
+        "buraco velho",
+        "bola bolo",
+        "piracanjuba leite",
+        "faro agucado",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "output_lines": [
+        "abgeunata",
+        "bvuerlahcoo",
+        "bboollao",
+        "plieriatceanjuba",
+        "faagruocado",
+        "ababababababababababababababababababababababababababababababababababababababababababababababababab"
+      ]
+    }
+  ],
+  "entry_description": "A entrada contém vários casos de teste.\n\nA primeira linha contém um inteiro N (1 ≤ N ≤ 100) indicando o número de encantamentos a serem criados.\n\nCada uma das próximas N linhas contém duas cadeias de caracteres (sem espaços) representando as sílabas de dois grimórios.\n\nCada cadeia contém entre 1 e 50 caracteres minúsculos.",
+  "output_description": "Para cada caso de teste, exiba o encantamento formado pela combinação das duas cadeias, conforme a regra descrita."
+}

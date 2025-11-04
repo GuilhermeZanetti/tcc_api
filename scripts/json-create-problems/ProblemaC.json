@@ -1,0 +1,29 @@
+{
+  "name": "Problema C: Investimento tributado",
+  "description": "Na economia brasileira, dois setores são estratégicos: a) o agronegócio é um dos pilares do PIB brasileiro e da balança comercial. B) o setor imobiliário gera empregos, movimenta a construção civil e tem efeito multiplicador na economia. LAC e LCI são intimamente ligados a esses dois setores.\n\nLetra de Crédito do Agronegócio (LCA): título de renda fixa emitido por bancos, lastreado em créditos do agronegócio (empréstimos e financiamentos concedidos a produtores rurais e empresas do setor).\n\nLetra de Crédito Imobiliário (LCI): título de renda fixa emitido por bancos, lastreado em créditos do setor imobiliário (financiamentos habitacionais, loteamentos, incorporações, etc).\n\nLCA e LCI são investimentos de renda fixa, voltados principalmente para pessoas físicas, incluindo investidores de baixa renda, que buscam segurança, previsibilidade de retorno e baixa volatilidade.\n\nEm palavras mais simples, ajudam os bancos a canalizar poupança privada para setores estratégicos (imobiliário e agro). Quem investe em LCI e LCI \"empresta\" dinheiro para o banco, que repassa esses recursos para financiar os setores do agronegócio e imobiliário, estratégicos na economia brasileira.\n\nPara o pequeno investidor, uma das grandes vantagens do LCA e LCI é a isenção do Imposto de Renda. Mas, no momento (outubro de 2025) está tramitando no Congresso uma Medida Provisória (MP) que prevê a taxação desses investimentos em 5%, enquanto o relator da MP estuda até uma taxa de 7,5%. Embora o governo visualize nisso aumento da arrecadação, essa taxação pode ter alguns efeitos colaterais:\n\na) para o investidor: deve ocorrer uma redução da atratividade e levá-lo a migrar para ativos que ofereçam maior rentabilidade líquida, como CDBs com liquidez diária ou Tesouro Direto.\nb) para os bancos: aumenta o custo de captação o que diminui o incentivo à emissão desses títulos.\nc) para o mercado: como LCI e LCA são mecanismos de financiamento direcionado (imobiliário e agronegócio), uma queda na atratividade pode deslocar recursos para outros setores, alterando o fluxo de crédito.\nd) para a sociedade: pode haver impacto negativo no preço dos imóveis e alimentos, já que ambos os setores dependem fortemente de financiamento. Deve ocorrer menor disponibilidade de crédito imobiliário ou aumento dos juros de financiamento habitacional, pois os bancos terão mais dificuldade e maior custo para captar recursos via LCI. No agronegócio também deve ocorrer a diminuição de crédito para produtores rurais, que podem enfrentar condições de crédito mais caras ou mais restritas.\ne) para o governo: embora pretenda-se aumento da arrecadação, pode ocorrer um movimento oposto. A arrecadação extra pode ser neutralizada por queda no crédito habitacional e agrícola, reduzindo o crescimento econômico e até a arrecadação em outros tributos.\n\nO CDB é um grande concorrente dos LCA e LCI, porém apresenta alíquotas de Imposto de Renda, baseado no tempo que o dinheiro fica aplicado. O portal borainvestir.b3.com.br traz uma tabela regressiva do Imposto de Renda pago em aplicações de CDB.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "7",
+        "100 100 180",
+        "38 34 721",
+        "0 0 725",
+        "120 100 359",
+        "100 100 360",
+        "100 1000 720",
+        "140 120 720"
+      ],
+      "output_lines": [
+        "LCA",
+        "IGUAL",
+        "IGUAL",
+        "CDB",
+        "LCA",
+        "LCA",
+        "CDB"
+      ]
+    }
+  ],
+  "entry_description": "A primeira linha contém um inteiro N (1 ≤ N ≤ 1000), o número de casos de teste.\n\nCada uma das N linhas seguintes contém três valores inteiros C, L e T, separados por espaço, onde:\n\na) C - percentual do CDI que o CDB entrega (0 ≤ C ≤ 200) - por exemplo 100 para \"100% do CDI\".\nb) L - percentual do CDI que a LCA entrega, em porcentagem (0 ≤ L ≤ 200)\nc) T- tempo em número de dias da aplicação (1 ≤ T ≤ 10000) - para simplificar, considere o cálculo linear sem capitalização composta.",
+  "output_description": "Para cada caso de teste, imprima uma linha com:\n\n• \"CDB\" se o rendimento líquido do CDB for maior que o da LCA;\n• \"LCA\" se o rendimento líquido da LCA for maior que o do CDB;\n• \"IGUAL\" se os rendimentos líquidos forem exatamente iguais."
+}

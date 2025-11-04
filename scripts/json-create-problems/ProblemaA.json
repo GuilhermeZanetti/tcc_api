@@ -1,0 +1,16 @@
+{
+  "name": "Problema A: Nota de Algoritmos",
+  "description": "A disciplina de Algoritmos ocupa um papel central na formação dos estudantes do curso de Bacharelado em Sistemas de Informação. Ela representa o contato formal com o raciocínio lógico e a resolução estruturada de problemas, fundamentos indispensáveis para outras disciplinas da área de computação e tecnologia.\n\nAntes de dominar uma linguagem de programação, o estudante precisa aprender a pensar como um programador. Nesse sentido, a disciplina de Algoritmos desenvolve o chamado pensamento computacional, que envolve:\n\n• Análise de problemas de forma lógica e estruturada;\n• Decomposição de situações complexas em partes menores e solucionáveis;\n• Identificação de padrões e construção de modelos de solução;\n• Abstração, ou seja, a capacidade de enxergar a essência do problema sem se prender a detalhes desnecessários.\n\nEssas habilidades transcendem a sala de aula – elas formam a base de um profissional capaz de automatizar processos, propor soluções eficientes e compreender sistemas complexos.\nPor meio dessa disciplina, os alunos entendem como transformar ideias em código executável. Isso envolve aprender a utilizar estruturas de controle, estruturas de dados e funções ou procedimentos, compondo soluções completas para problemas reais.\n\nEm se tratando de abstração, um aluno ingressante está pedindo sua ajuda para montar um programa que calcule a nota A1 de Algoritmos, que é dada pela média ponderada baseada em três itens avaliativos:\n\n✓ Prova individual – peso 7\n✓ Atividades práticas regulares em grupo – peso 2\n✓ Trabalho bimestral em grupo – peso 1\n\nAo atribuir as notas dos itens avaliativos, o professor de Algoritmos usa números reais com até 3 casas decimais.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "3.6 5.5 7.38"
+      ],
+      "output_lines": [
+        "4.358"
+      ]
+    }
+  ],
+  "entry_description": "A entrada de dados é composta por três número reais P, AP e TB (0 <= P,AP,TB <= 10), que representam respectivamente a nota da prova, uma nota única do conjunto de atividades práticas e a nota do trabalho.",
+  "output_description": "A saída deve ter um único número real, com 3 casas decimais, correspondente a nota A1 calculada. Não devem existir mensagens para o usuário na saída de dados."
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Problema B: Maratona FHO de Programação",
+  "description": "A Maratona FHO de Programação é um evento que ocorre entre os alunos do curso de Bacharelado em Sistemas de Informação e tem nos estudantes seu objetivo principal no que se refere ao desenvolvimento e aprimoramento de técnicas de programação e de suas capacidades de trabalho em equipe, buscando também, estimular a criatividade e o aperfeiçoamento na habilidade de resolver problemas sob pressão.\n\nCada equipe recebe um caderno com 10 problemas para serem solucionados por meio da Linguagem C, C++ ou Python. Uma vez desenvolvido o código da solução de um problema, a equipe deve submetê-lo para avaliação.\n\nA cada submissão realizada, o código fonte enviado passa pelo processo de compilação e execução. Ο programa passa por uma bateria de testes, de forma automática pelo BOCA, considerando uma variedade de entrada de dados diferentes dos exemplos dados no enunciado do problema. Se o programa passar em todos os testes ele é considerado resolvido e aceito.\n\nA equipe que resolver mais problemas aceitos é a campeã da Maratona. Se ocorrer empate entre duas ou mais equipes, o menor Tempo Acumulado (TA) será o critério de desempate.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "9",
+        "A 3 75",
+        "B 4 77",
+        "C 2 85",
+        "G 2 77",
+        "F 1 118",
+        "H 2 76",
+        "I 0 0",
+        "D 1 36",
+        "E 2 125"
+      ],
+      "output_lines": [
+        "8 849"
+      ]
+    }
+  ],
+  "entry_description": "A primeira linha contém um número inteiros P (0 ≤ P ≤ 10), que representa a quantidade de problemas a serem analisados.\n\nCada uma das P linhas seguintes apresenta 3 dados de um problema, separados por espaço em branco, com a seguinte formatação:\n\na) Identificador do problema (1 caractere).\nb) Quantidade de tentativas (inteiro; quantidade >= 0; se zero, não houve tentativa).\nc) Tempo do aceite (inteiro; tempo >= 0; se zero, não foi aceito).",
+  "output_description": "A saída é composta por dois números inteiros, separados por um espaço em branco.\n\nPrimeiro deve constar a quantidade de problemas aceitos, seguido do Tempo Acumulado (TA)."
+}

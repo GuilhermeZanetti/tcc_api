@@ -1,0 +1,27 @@
+{
+  "name": "Problema E: PIB per capta",
+  "description": "O Produto Interno Bruto (PIB) representa a soma de todos os bens e serviços finais produzidos em um país durante um determinado período, geralmente um ano. Quando dividido pela população, obtemos o PIB per capita, que expressa a média de riqueza gerada por habitante e é amplamente utilizado como indicador de desenvolvimento econômico.\n\nSegundo dados recentes divulgados pelo Fundo Monetário Internacional (FMI), o Brasil está entre as 10 maiores economias do mundo (em valores absolutos de PIB), porém, embora pudesse ser motivo de orgulho, o número brasileiro não impressiona tanto quando o dividimos pela população do país. Segundo o FMI, o Brasil possui PIB per capita estimado em cerca de US$ 9.964 para o ano de 2025 e baseado nisso, ocupa apenas a 80ª posição no ranking de PIB per capita (nominal). Como comparação de PIB per capta, observa-se alguns países: Estados Unidos (US$ 89.105), Dinamarca (US$ 74.969), Israel (US$ 57.760), Alemanha (US$ 55.911), Japão (US$ 33.956) e Uruguai (US$ 22.693).",
+  "test_cases": [
+    {
+      "input_lines": [
+        "6",
+        "TheNorth 7800 120",
+        "Crownlands 35700 200",
+        "Stormlands 13850 1480",
+        "TheVale 8500 85",
+        "Westerlands 427300 1500",
+        "Riverlands 10000 100"
+      ],
+      "output_lines": [
+        "Westerlands: 284866.67",
+        "Crownlands: 178500.00",
+        "TheVale: 100000.00",
+        "Riverlands: 100000.00",
+        "TheNorth: 65000.00",
+        "Stormlands: 9358.11"
+      ]
+    }
+  ],
+  "entry_description": "A entrada contém um número inteiro N (1 ≤ N ≤ 30), indicando a quantidade de países a serem analisados.\n\nEm seguida, seguem N linhas, cada uma contendo:\n\n• Uma string com o nome do país (sem espaços);\n• Um número real P representando o PIB total (em bilhões de dólares);\n• Um número real H representando a população (em milhões de habitantes).",
+  "output_description": "O programa deve exibir N linhas com os países em ordem decrescente de PIB per capita, no formato:\n\nNome do país: espaço PIB per capita (com duas casas decimais).\n\nOs dados com que o programa será testado garantem não haver dois ou mais países com PIB per capta iguais."
+}

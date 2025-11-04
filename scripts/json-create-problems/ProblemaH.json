@@ -1,0 +1,29 @@
+{
+  "name": "Problema H: Mestre da Arena",
+  "description": "A Cidade de Bravus é conhecida por sediar o Torneio dos Heróis, um evento anual onde guerreiros de todas as partes do reino se enfrentam em duelos intensos.\n\nO objetivo é simples: provar sua força, aumentar o poder e garantir um lugar entre os protetores do reino.\n\nCada personagem da arena possui um nome, um nível de poder e um valor de HP (Health Points). Durante os duelos, o poder e o HP dos lutadores se modificam conforme o resultado dos combates.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "4",
+        "Archer 60 400",
+        "Berserker 90 600",
+        "Healer 30 350",
+        "Knight 80 500",
+        "5",
+        "Knight Archer",
+        "Berserker Knight",
+        "Healer Archer",
+        "Knight Healer",
+        "Berserker Archer"
+      ],
+      "output_lines": [
+        "Archer 78 282",
+        "Berserker 101 564",
+        "Healer 30 69",
+        "Knight 175 500"
+      ]
+    }
+  ],
+  "entry_description": "A entrada é composta por:\n\na) A primeira linha da entrada tem um número inteiro N (0 <= 2 N <= 10) que corresponde a quantidade de personagens que podem duelar na arena.\nb) Nas N linhas seguintes, constam os dados de cada personagem, separados por espaço em branco, da seguinte forma:\nnome poder HP\nc) Um número inteiro D (1 <= D <= 50) que corresponde ao número de duelos realizados.\nd) Nas D linhas seguintes, cada uma representa um duelo entre dois combatentes, com os nomes separados por espaço em branco, da seguinte forma:\nNome1 Nome2",
+  "output_description": "Após todos os duelos, exiba o estado final de cada personagem, na mesma ordem em que foram lidos, separados por um espaço em branco, da seguinte forma:\n\nnome poder HP\n\nO resultado final de poder e HO deve ser exibido com arredondamento para número inteiro."
+}

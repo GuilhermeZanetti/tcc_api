@@ -1,0 +1,28 @@
+{
+  "name": "Problema F: Estufas inteligentes",
+  "description": "A agricultura moderna tem incorporado tecnologias avançadas de Internet das Coisas (IoT) e automação para monitorar variáveis ambientais em tempo real. Um exemplo importante são as estufas inteligentes, utilizadas para o cultivo de hortaliças e frutas sob condições controladas.\n\nNessas estufas, sensores são instalados em diferentes pontos para monitorar variáveis como temperatura, umidade e luminosidade, possibilitando o controle preciso do ambiente de cultivo. Esses sensores enviam dados em tempo real para o sistema de monitoramento, que precisa processar grandes quantidades de informações.\n\nPara o respectivo processamento, esses dados devem estar na memória, e uma forma prática de armazenar e analisar esses dados é com uso de matrizes, nas quais cada posição representa um sensor específico.\n\nSeu desafio será desenvolver um programa que analise as temperaturas de uma estufa e produza estatísticas que ajudem o técnico agrícola a tomar decisões.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "5 4",
+        "20.00 21.50 19.38 23.60",
+        "20.00 21.50 22.00 22.50",
+        "20.73 19.37 22.00 22.50",
+        "20.00 21.50 22.00 21.90",
+        "20.00 23.60 21.15 19.37"
+      ],
+      "output_lines": [
+        "Temperatura media: 21.23",
+        "Temperatura maxima: 23.60 (1 x 4)",
+        "Temperatura minima: 19.37 (3 x 2)",
+        "Fileira 1: 21.12",
+        "Fileira 2: 21.50",
+        "Fileira 3: 21.15",
+        "Fileira 4: 21.35",
+        "Fileira 5: 21.03"
+      ]
+    }
+  ],
+  "entry_description": "A entrada começa com dois inteiros L e C (1 ≤ L, C ≤ 10), representando respectivamente o número de linhas e colunas da matriz de sensores.\n\nEm seguida, seguem L linhas, cada uma contendo C valores reais correspondentes às temperaturas registradas pelos sensores (em °C).",
+  "output_description": "A saída de dados deve estar dividida em várias linhas, como podem ser observadas no exemplo de saída. Todos os valores reais devem ser apresentados com 2 casas decimais. Observe que cada linha é formada por mensagem de texto (sem acentuação) e valores numéricos.\n\n• A primeira linha apresenta a temperatura média da estufa.\n• Na segunda e na terceira linha serão exibidos, respectivamente, a temperatura máxima e a temperatura mínima medida na estufa, incluindo a posição dos sensores que a detectaram. Em caso de dois ou mais sensores compartilharem a mesma temperatura máxima ou mínima, deve prevalecer a posição do primeiro deles.\n• Em seguida serão apresentadas L linhas, cada uma delas mostrando a temperatura média da fileira."
+}
