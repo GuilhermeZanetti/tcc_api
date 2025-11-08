@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 # Nome do seu arquivo JSON de entrada
-json_filename = 'scripts/transform-json-into-csv/A/python/problemA_python.json'
+json_filename = 'scripts/transform-json-into-csv/A/c_cpp/response_1762390168906.json'
 # Nome do arquivo CSV de saída
 csv_filename = 'output_results.csv'
 
