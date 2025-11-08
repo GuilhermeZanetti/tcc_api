@@ -8,15 +8,15 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-language/A/Python"
+SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-language/A/C-C++"
 PROBLEM_ID = "5fc227ac-7eb5-4361-8371-3102e30c5179"
-LANGUAGE = "py"
+LANGUAGE = "cpp"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
 # --- Helper Functions ---
 
-def submit_code(source_path: str, token: str) -> str | None:
+def submit_code(source_path: str, token: str, language_type: str) -> str | None:
     """Reads a source file, encodes it, and submits it to the API."""
     print(f"Submitting {os.path.basename(source_path)}...")
     try:
@@ -27,10 +27,10 @@ def submit_code(source_path: str, token: str) -> str | None:
         return None
 
     encoded_code = base64.b64encode(source_code_bytes).decode("utf-8")
-
+    
     payload = {
         "problem_id": PROBLEM_ID,
-        "language_type": LANGUAGE,
+        "language_type": language_type,
         "content": encoded_code,
     }
 
@@ -100,9 +100,9 @@ def main():
     print(f"Target directory: {SUBMISSIONS_DIR}")
 
     for filename in sorted(os.listdir(SUBMISSIONS_DIR)):
-        if filename.endswith(".py"):
+        if filename.endswith(".c") or filename.endswith(".cpp") or filename.endswith(".py"):
             file_path = os.path.join(SUBMISSIONS_DIR, filename)
-            submission_id = submit_code(file_path, args.token)
+            submission_id = submit_code(file_path, args.token, filename.rsplit(".")[1])
             if submission_id:
                 poll_for_result(submission_id, args.token)
             print("-" * 20)
