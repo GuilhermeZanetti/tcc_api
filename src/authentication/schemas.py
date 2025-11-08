@@ -24,7 +24,7 @@ class IntegratorResponse(BaseModel):
         from_attributes = True
 
 class IntegratorAuthRequest(BaseModel):
-    api_key: str = Field(..., description="Chave de API do integrador")
+    api_key: str = Field(..., description="Chave de API do integrador", examples=["57fba00c-aa3d-4009-87d6-700f58a4032b"])
 
 class IntegratorAuthResponse(BaseModel):
     access_token: str = Field(..., description="Token de acesso JWT")
