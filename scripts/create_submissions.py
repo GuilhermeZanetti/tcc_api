@@ -8,7 +8,7 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-problem" # C-C++ # Python
+SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-problem/C" # C-C++ # Python
 PROBLEM_ID = "999481ad-6770-4c93-b075-21c8499c9b05"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
