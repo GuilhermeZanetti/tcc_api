@@ -8,11 +8,11 @@ from src.contrib.repository.mongodb_utils import (
     close_mongo_connection,
     connect_to_mongo,
 )
-from src.logging_config import setup_logging
+# from src.logging_config import setup_logging
 from src.contrib.middleware.audit import AuditMiddleware
 from src.utils import load_identifier
 
-setup_logging()
+# setup_logging()
 
 
 class Application(FastAPI):

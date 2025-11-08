@@ -146,13 +146,13 @@ class Judge:
                     print(f"Runtime Error:\t{error_str}")
                     return STATUS_RUNTIME_ERROR
             except AttributeError as e:
-                print('AttributeError\n')
+                print("AttributeError\n")
                 print(e)
                 print("=========")
                 print(f"Error: {error}")
                 return STATUS_RUNTIME_ERROR
             except Exception as e:
-                print('Erro desconhecido ao decodificar error\n')
+                print("Erro desconhecido ao decodificar error\n")
                 print(e)
                 print("=========")
                 print(f"Error: {error}")
@@ -258,19 +258,13 @@ class PythonRunner(CodeRunner):
         self, code: bytes, data_input: str
     ) -> Tuple[Optional[bytes], Optional[bytes]]:
         """Run Python code."""
-        wrapper_code = f"""import sys
-from io import StringIO
-
-# Prepare input data
-input_data = '''{data_input}'''
-sys.stdin = StringIO(input_data)
-
-# Original code starts here
-{code.decode() if isinstance(code, bytes) else code}"""
-
-        # Pass an empty string for data_input to _execute, as it's handled in the wrapper.
+        print(" \nRodando Python Runner!! \n")
         return self._execute(
-            "python -u {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT
+            "python -u {0}",
+            code,
+            data_input,
+            settings.TLE_TIMEOUT,
+            file_suffix=".py",
         )
 
 
@@ -352,7 +346,9 @@ class PHPRunner(CodeRunner):
 
 
 class JavaScriptRunner(CodeRunner):
-    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+    def run(
+        self, code: bytes, data_input: str
+    ) -> Tuple[Optional[bytes], Optional[bytes]]:
         """
         Run JavaScript code using Node.js with an I/O wrapper.
         The user's code is expected to be inside a function called 'main'.
@@ -361,7 +357,16 @@ class JavaScriptRunner(CodeRunner):
 
         # O 'data_input' é formatado como um array de strings do JavaScript.
         # As aspas são escapadas para evitar erros de sintaxe.
-        input_lines_js_array = '[' + ','.join(f'"{line}"' for line in data_input.replace('\\', '\\\\').replace('"', '\\"').splitlines()) + ']'
+        input_lines_js_array = (
+            "["
+            + ",".join(
+                f'"{line}"'
+                for line in data_input.replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .splitlines()
+            )
+            + "]"
+        )
 
         # Wrapper que lê a entrada, chama a função 'main' do usuário e executa o código.
         wrapper_code = f"""
@@ -386,7 +391,13 @@ class JavaScriptRunner(CodeRunner):
         """
 
         # A entrada de dados ('data_input') é vazia, pois já foi injetada no wrapper.
-        return self._execute("node {0}", wrapper_code.encode(), "", settings.TLE_TIMEOUT, file_suffix=".js")
+        return self._execute(
+            "node {0}",
+            wrapper_code.encode(),
+            "",
+            settings.TLE_TIMEOUT,
+            file_suffix=".js",
+        )
 
 
 class GoRunner(CodeRunner):
