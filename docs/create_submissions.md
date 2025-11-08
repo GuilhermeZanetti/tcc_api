@@ -26,3 +26,12 @@ python /scripts/transform-json-into-csv/submissions_to_csv.py
 ```
 
 # 6. Entre no site Google Sheets e Importe o arquivo
+
+# 7. Finalizou o teste?
+Agora só limpar as submissions e seguir para as próximas:
+1. Entre no docker desktop
+1. Abra o container do mongo
+1. Vá para a aba Exec
+1. Digite o comando: `mongosh`
+1. Acesse o banco: `use judge`
+1. Delete todas as submissions: `db.submissions.deleteMany({})`
