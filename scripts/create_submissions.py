@@ -8,8 +8,8 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-problem/A"
-PROBLEM_ID = "5fc227ac-7eb5-4361-8371-3102e30c5179"
+SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-problem/B"
+PROBLEM_ID = "999481ad-6770-4c93-b075-21c8499c9b05"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
