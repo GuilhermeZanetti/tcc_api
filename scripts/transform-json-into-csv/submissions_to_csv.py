@@ -1,10 +1,11 @@
 import pandas as pd
 import json
 
+caminho_arquivo = 'c:/projects/tcc_api/scripts/transform-json-into-csv/B/c_cpp'
 # Nome do seu arquivo JSON de entrada
-json_filename = 'scripts/transform-json-into-csv/A/c_cpp/response_1762390168906.json'
+json_filename = f'{caminho_arquivo}/response_1762612697728.json'
 # Nome do arquivo CSV de saída
-csv_filename = 'output_results.csv'
+csv_filename = f'{caminho_arquivo}/output_results.csv'
 
 try:
     # 1. Carregar o arquivo JSON

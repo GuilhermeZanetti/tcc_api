@@ -33,6 +33,10 @@ class Judge:
         if not runner:
             raise ValueError(f"Unsupported language type: {submission.language_type}")
 
+        print(f"\n=====================================")
+        print(f" Rodando submission: {submission.id}")
+        print(f" Linguagem: {submission.language_type}")
+
         code = Base64Utils.decode(submission.content)
 
         test_cases = data.get("test_cases", [])
