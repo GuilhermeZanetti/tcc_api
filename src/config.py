@@ -19,8 +19,8 @@ class Settings(BaseSettings):
 
     TLE_TIMEOUT: int = Field(default=30)
 
-    IGNORE_TRAILING_WHITESPACE: bool = Field(default=True)
-    IGNORE_EMPTY_LINES: bool = Field(default=True)
+    IGNORE_TRAILING_WHITESPACE: bool = Field(default=False)
+    IGNORE_EMPTY_LINES: bool = Field(default=False)
     CASE_SENSITIVE: bool = Field(default=True)
     API_KEY_MASTER: SecretStr = Field(env='API_KEY_MASTER')
     

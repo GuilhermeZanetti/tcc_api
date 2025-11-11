@@ -131,6 +131,7 @@ class Judge:
         output, error = response if response != "TLE" else (None, None)
 
         print(f"Output:\t{output}")
+        print(f"Expected Output:\t{expected_output}")
         print(f"Error:\t{error}")
 
         if response == "TLE" or output == "TLE":
