@@ -13,12 +13,12 @@
         "Riverlands 10000 100"
       ],
       "output_lines": [
-        "Westerlands: 284866.67",
-        "Crownlands: 178500.00",
-        "TheVale: 100000.00",
-        "Riverlands: 100000.00",
-        "TheNorth: 65000.00",
-        "Stormlands: 9358.11"
+        "Westerlands: 284866.67\n",
+        "Crownlands: 178500.00\n",
+        "TheVale: 100000.00\n",
+        "Riverlands: 100000.00\n",
+        "TheNorth: 65000.00\n",
+        "Stormlands: 9358.11\n"
       ]
     }
   ],

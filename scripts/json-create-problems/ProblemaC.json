@@ -14,13 +14,13 @@
         "140 120 720"
       ],
       "output_lines": [
-        "LCA",
-        "IGUAL",
-        "IGUAL",
-        "CDB",
-        "LCA",
-        "LCA",
-        "CDB"
+        "LCA\n",
+        "IGUAL\n",
+        "IGUAL\n",
+        "CDB\n",
+        "LCA\n",
+        "LCA\n",
+        "CDB\n"
       ]
     }
   ],

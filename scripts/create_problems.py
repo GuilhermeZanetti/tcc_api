@@ -6,12 +6,12 @@ import requests
 API_URL = "http://127.0.0.1:8000/v0/problems"
 
 # Diretório contendo os arquivos JSON dos problemas
-JSON_DIR = "scripts/json-create-problems"
+JSON_DIR = "json-create-problems"
 
 # Token JWT para autenticação
 # Você pode obter o token fazendo uma requisição POST para http://127.0.0.1:8000/auth/integrator-token
 # com o corpo: {"api_key": "57fba00c-aa3d-4009-87d6-700f58a4032b"}
-JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZGNmNWIyMi1iMmEyLTRjMGEtODhmNS1mNGI3ODc3MjhjOGYiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6c3VibWlzc2lvbnMiLCJyZWFkOnByb2JsZW1zIiwiY3JlYXRlOnN1Ym1pc3Npb25zIiwiY3JlYXRlOnByb2JsZW1zIiwidXBkYXRlOnN1Ym1pc3Npb25zIiwidXBkYXRlOnByb2JsZW1zIiwiZGVsZXRlOnByb2JsZW1zIiwicmVhZDpzdWJtaXNzaW9ucyJdLCJleHAiOjE3NjIxMDM5MzJ9.M_M2v8NNCK1LNnyDHFLdXZs8sQiFCVFavIppMMke7E0"
+JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZGNmNWIyMi1iMmEyLTRjMGEtODhmNS1mNGI3ODc3MjhjOGYiLCJwZXJtaXNzaW9ucyI6WyJ1cGRhdGU6cHJvYmxlbXMiLCJjcmVhdGU6c3VibWlzc2lvbnMiLCJ1cGRhdGU6c3VibWlzc2lvbnMiLCJkZWxldGU6cHJvYmxlbXMiLCJyZWFkOnN1Ym1pc3Npb25zIiwicmVhZDpwcm9ibGVtcyIsImRlbGV0ZTpzdWJtaXNzaW9ucyIsImNyZWF0ZTpwcm9ibGVtcyJdLCJleHAiOjE3NjI5OTAwMDN9.wNPTa8tHwBG4x-R6sedinx10B77nUuqxPgw-NWYnXFo"
 
 if not JWT_TOKEN:
     print("Erro: O token JWT não foi fornecido.")

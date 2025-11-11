@@ -8,8 +8,8 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-SUBMISSIONS_DIR = "C:/projects/boca_scrapping/ordered-by-status-problem-language/TESTES-PresentationError"
-PROBLEM_ID = "5fc227ac-7eb5-4361-8371-3102e30c5179"
+SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/ordered-by-status-problem-language/TESTES-PresentationError"
+PROBLEM_ID = "abad3db3-0f6a-4834-88e0-fd7ca0f42470"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
