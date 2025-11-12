@@ -112,9 +112,9 @@ async def query(
 @router.delete(
     '/{id}',
     summary='Delete a Problem by id',
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
     responses={
-        204: {'description': 'Problem deleted successfully'},
+        200: {'description': 'Problem deleted successfully'},
         404: {'model': NotFoundErrorResponse},
         500: {'model': InternalServerErrorResponse},
     },
