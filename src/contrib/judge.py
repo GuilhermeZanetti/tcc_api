@@ -123,14 +123,15 @@ class Judge:
         return priorities.get(status, 0)
 
     def _evaluate(
-        self, response: Tuple[Optional[bytes], Optional[bytes]], expected_output: str
+        self,
+        response: Tuple[Optional[bytes], Optional[bytes]],
+        expected_output: str
     ) -> str:
         """
         Evaluate the response and return the corresponding status.
         """
         output, error = response if response != "TLE" else (None, None)
 
-        print(f"Output:\t{output}")
         print(f"Expected Output:\t{expected_output}")
         print(f"Error:\t{error}")
 
@@ -164,23 +165,15 @@ class Judge:
             if not error:
                 return STATUS_COMPILATION_ERROR
 
-        output_decoded = output.decode() if output else ""
+        output_decoded = output.decode('utf-8') if output else ""
+        print(f'Output decoded: {output_decoded}')
 
-        if settings.IGNORE_TRAILING_WHITESPACE:
-            output_decoded = "\n".join(
-                line.rstrip() for line in output_decoded.splitlines()
-            )
-            expected_output = "\n".join(
-                line.rstrip() for line in expected_output.splitlines()
-            )
-
-        if settings.IGNORE_EMPTY_LINES:
-            output_decoded = "\n".join(
-                line for line in output_decoded.splitlines() if line.strip()
-            )
-            expected_output = "\n".join(
-                line for line in expected_output.splitlines() if line.strip()
-            )
+        output_decoded = "\n".join(
+            line for line in output_decoded.splitlines() if line.strip()
+        )
+        expected_output = "\n".join(
+            line for line in expected_output.splitlines() if line.strip()
+        )
 
         if not settings.CASE_SENSITIVE:
             output_decoded = output_decoded.lower()
