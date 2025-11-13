@@ -17,10 +17,7 @@
         "Berserker Archer"
       ],
       "output_lines": [
-        "Archer 78 282\n",
-        "Berserker 101 564\n",
-        "Healer 30 69\n",
-        "Knight 175 500\n"
+        "Archer 78 282\nBerserker 101 564\nHealer 30 69\nKnight 175 500\n"
       ]
     }
   ],
