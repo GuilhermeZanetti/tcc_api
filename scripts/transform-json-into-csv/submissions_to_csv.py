@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-caminho_arquivo = '/Users/zanetti/projetos/tcc_api/scripts/transform-json-into-csv'
+caminho_arquivo = '/Users/zanetti/projetos/tcc_api/scripts/transform-json-into-csv/I'
 # Nome do seu arquivo JSON de entrada
 json_filename = f'{caminho_arquivo}/response.json'
 # Nome do arquivo CSV de saída

@@ -122,42 +122,23 @@ class Judge:
         }
         return priorities.get(status, 0)
 
-    def _evaluate(
-        self,
-        response: Tuple[Optional[bytes], Optional[bytes]],
-        expected_output: str
-    ) -> str:
+    def _evaluate(self, response: Tuple[Optional[bytes], Optional[bytes]], expected_output: str) -> str:
         """
         Evaluate the response and return the corresponding status.
         """
         output, error = response if response != "TLE" else (None, None)
 
-        print(f"Expected Output:\t{expected_output}")
-        print(f"Error:\t{error}")
-
         if response == "TLE" or output == "TLE":
+            print(STATUS_TIME_LIMIT_EXCEEDED)
             return STATUS_TIME_LIMIT_EXCEEDED
 
         if error:
-            try:
-                error_str = error.decode()
-                if "EOFError: EOF when reading a line" not in error_str:
-                    if "MemoryError" in error_str or "out of memory" in error_str:
-                        return STATUS_MEMORY_LIMIT_EXCEEDED
-
-                    print(f"Runtime Error:\t{error_str}")
-                    return STATUS_RUNTIME_ERROR
-            except AttributeError as e:
-                print("AttributeError\n")
-                print(e)
-                print("=========")
-                print(f"Error: {error}")
-                return STATUS_RUNTIME_ERROR
-            except Exception as e:
-                print("Erro desconhecido ao decodificar error\n")
-                print(e)
-                print("=========")
-                print(f"Error: {error}")
+            error_str = error.decode()
+            if "EOFError: EOF when reading a line" not in error_str:
+                if "MemoryError" in error_str or "out of memory" in error_str:
+                    return STATUS_MEMORY_LIMIT_EXCEEDED
+                
+                print(f"Runtime Error:\t{error_str}")
                 return STATUS_RUNTIME_ERROR
 
         if not output:
@@ -165,26 +146,54 @@ class Judge:
             if not error:
                 return STATUS_COMPILATION_ERROR
 
-        output_decoded = output.decode('utf-8') if output else ""
-        print(f'Output decoded: {output_decoded}')
-
-        output_decoded = "\n".join(
-            line for line in output_decoded.splitlines() if line.strip()
-        )
-        expected_output = "\n".join(
-            line for line in expected_output.splitlines() if line.strip()
-        )
-
-        if not settings.CASE_SENSITIVE:
-            output_decoded = output_decoded.lower()
-            expected_output = expected_output.lower()
-
+        output_decoded = output.decode() if output else ""
+        
+        # 1. Comparação Estrita (Literal)
+        # Verifica se a saída do usuário é bit a bit idêntica à esperada.
         if output_decoded == expected_output:
+            print(STATUS_ACCEPTED)
             return STATUS_ACCEPTED
 
-        if output_decoded.strip() == expected_output.strip():
+        # 2. Normalização para Presentation Error (PE)
+        # Se a comparação estrita falhar, normalizamos ambas as strings
+        # para ignorar diferenças comuns de whitespace.
+
+        # Converte \r\n (Windows) para \n (Unix) e remove espaços no final de CADA linha
+        def normalize_string(s: str) -> str:
+            # Substitui \r\n por \n, depois \r por \n (para cobrir todos os casos)
+            s_normalized = s.replace('\r\n', '\n').replace('\r', '\n')
+            
+            # Divide pelas linhas, remove trailing whitespace de cada uma
+            lines = [line.rstrip() for line in s_normalized.splitlines()]
+            
+            # Junta de volta. O .strip() final remove newlines em branco
+            # no início ou fim do bloco de saída.
+            return '\n'.join(lines).strip()
+
+        output_normalized = normalize_string(output_decoded)
+        expected_normalized = normalize_string(expected_output)
+
+        if output_normalized == expected_normalized:
+            # Se são iguais APÓS a normalização, é Presentation Error
+            print(STATUS_PRESENTATION_ERROR)
             return STATUS_PRESENTATION_ERROR
 
+        # 3. Verificação de Case-Insensitive (se aplicável)
+        # Se as settings mandarem ignorar o case, fazemos isso DEPOIS
+        # de verificar PE, pois mudança de case não é PE, é WA.
+        if not settings.CASE_SENSITIVE:
+            output_normalized = output_normalized.lower()
+            expected_normalized = expected_normalized.lower()
+            if output_normalized == expected_normalized:
+                # Se settings.CASE_SENSITIVE = False, isso seria ACCEPTED.
+                # A lógica original já faria isso, mas é bom separar.
+                print('CASE_SENSITIVE: '+ STATUS_ACCEPTED)
+                return STATUS_ACCEPTED 
+
+        # 4. Se tudo falhar, é Wrong Answer
+        # Adicione prints de debug aqui se necessário
+        print("--- FINAL EXPECTED ---\n", repr(expected_normalized))
+        print("--- FINAL DECODED ----\n", repr(output_normalized))
         return STATUS_WRONG_ANSWER
 
     async def _update_submission_status(self, submission_id: UUID, status: str):
