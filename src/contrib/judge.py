@@ -134,6 +134,19 @@ class Judge:
 
         if error:
             error_str = error.decode()
+            
+            # --- NOVA CHECAGEM DE COMPILATION ERROR ---
+            # 1. Verifica CE explícito das linguagens compiladas
+            if error_str.startswith("COMPILATION_ERROR:"):
+                print(f"Compilation Error:\t{error_str}")
+                return STATUS_COMPILATION_ERROR
+            
+            # 2. Verifica CE de linguagens interpretadas (ex: Python)
+            if "SyntaxError:" in error_str:
+                print(f"Compilation Error (SyntaxError):\t{error_str}")
+                return STATUS_COMPILATION_ERROR
+            # --- FIM DA NOVA CHECAGEM ---
+
             if "EOFError: EOF when reading a line" not in error_str:
                 if "MemoryError" in error_str or "out of memory" in error_str:
                     return STATUS_MEMORY_LIMIT_EXCEEDED
@@ -142,56 +155,41 @@ class Judge:
                 return STATUS_RUNTIME_ERROR
 
         if not output:
-            # Se o erro for EOF não consideramos como falha.
+            # Se não houve output e não foi um erro de compilação ou runtime,
+            # pode ser um erro silencioso, mas vamos tratá-lo como WA
+            # (a menos que a saída esperada também seja vazia).
             if not error:
-                return STATUS_COMPILATION_ERROR
+                # Se o erro for EOF (que filtramos acima), não é falha.
+                # Se não for EOF e não tiver output, é estranho.
+                pass
 
         output_decoded = output.decode() if output else ""
         
         # 1. Comparação Estrita (Literal)
-        # Verifica se a saída do usuário é bit a bit idêntica à esperada.
         if output_decoded == expected_output:
             print(STATUS_ACCEPTED)
             return STATUS_ACCEPTED
 
         # 2. Normalização para Presentation Error (PE)
-        # Se a comparação estrita falhar, normalizamos ambas as strings
-        # para ignorar diferenças comuns de whitespace.
-
-        # Converte \r\n (Windows) para \n (Unix) e remove espaços no final de CADA linha
         def normalize_string(s: str) -> str:
-            # Substitui \r\n por \n, depois \r por \n (para cobrir todos os casos)
             s_normalized = s.replace('\r\n', '\n').replace('\r', '\n')
-            
-            # Divide pelas linhas, remove trailing whitespace de cada uma
             lines = [line.rstrip() for line in s_normalized.splitlines()]
-            
-            # Junta de volta. O .strip() final remove newlines em branco
-            # no início ou fim do bloco de saída.
+            # O .strip() final remove newlines em branco no início ou fim
             return '\n'.join(lines).strip()
 
         output_normalized = normalize_string(output_decoded)
         expected_normalized = normalize_string(expected_output)
 
         if output_normalized == expected_normalized:
-            # Se são iguais APÓS a normalização, é Presentation Error
             print(STATUS_PRESENTATION_ERROR)
             return STATUS_PRESENTATION_ERROR
 
         # 3. Verificação de Case-Insensitive (se aplicável)
-        # Se as settings mandarem ignorar o case, fazemos isso DEPOIS
-        # de verificar PE, pois mudança de case não é PE, é WA.
         if not settings.CASE_SENSITIVE:
-            output_normalized = output_normalized.lower()
-            expected_normalized = expected_normalized.lower()
-            if output_normalized == expected_normalized:
-                # Se settings.CASE_SENSITIVE = False, isso seria ACCEPTED.
-                # A lógica original já faria isso, mas é bom separar.
-                print('CASE_SENSITIVE: '+ STATUS_ACCEPTED)
-                return STATUS_ACCEPTED 
+            if output_normalized.lower() == expected_normalized.lower():
+                return STATUS_ACCEPTED
 
         # 4. Se tudo falhar, é Wrong Answer
-        # Adicione prints de debug aqui se necessário
         print("--- FINAL EXPECTED ---\n", repr(expected_normalized))
         print("--- FINAL DECODED ----\n", repr(output_normalized))
         return STATUS_WRONG_ANSWER
