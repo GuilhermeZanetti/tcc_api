@@ -270,42 +270,128 @@ class PythonRunner(CodeRunner):
             file_suffix=".py",
         )
 
-
 class CRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run C code."""
-        return self._execute(
-            "gcc -o {1}_exec {0} -lm && {1}_exec && rm {1}_exec",
-            code,
-            data_input,
-            settings.TLE_TIMEOUT,
-            file_suffix=".c",
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Compila e depois executa o código C."""
+        data_entry = data_input.encode('utf-8')
+
+        with tempfile.NamedTemporaryFile(suffix=".c", delete=False) as tmp_file:
+            tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
+            tmp_file.flush()
+            tmp_file_name = tmp_file.name
+        
+        exec_name = f"{tmp_file_name.rsplit('.', 1)[0]}_exec"
+        compile_command = f"gcc -o {exec_name} {tmp_file_name} -lm"
+        
+        # --- Etapa 1: Compilar ---
+        compile_process = subprocess.Popen(
+            compile_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
         )
+        _compile_stdout, compile_stderr = compile_process.communicate()
+        
+        # --- Etapa 2: Checar Erro de Compilação ---
+        if compile_process.returncode != 0:
+            try:
+                os.remove(tmp_file_name)
+            except Exception:
+                pass
+            # Retorna um erro específico que _evaluate irá capturar
+            return (None, f"COMPILATION_ERROR:\n{compile_stderr.decode()}".encode())
+
+        # --- Etapa 3: Executar ---
+        run_command = f"{exec_name}"
+        run_process = subprocess.Popen(
+            run_command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
+
+        try:
+            output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
+            return output, error
+
+        except subprocess.TimeoutExpired:
+            run_process.kill()
+            return "TLE", None
+        except Exception as e:
+            return None, str(e).encode()
+        finally:
+            # --- Etapa 4: Limpeza ---
+            try:
+                os.remove(tmp_file_name)
+                os.remove(exec_name)
+            except Exception:
+                pass
 
 
 class CppRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run C++ code."""
-        return self._execute(
-            "g++ -o {1}_exec {0} -lm && {1}_exec && rm {1}_exec",
-            code,
-            data_input,
-            settings.TLE_TIMEOUT,
-            file_suffix=".cpp",
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Compila e depois executa o código C++."""
+        data_entry = data_input.encode('utf-8')
+
+        with tempfile.NamedTemporaryFile(suffix=".cpp", delete=False) as tmp_file:
+            tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
+            tmp_file.flush()
+            tmp_file_name = tmp_file.name
+        
+        exec_name = f"{tmp_file_name.rsplit('.', 1)[0]}_exec"
+        compile_command = f"g++ -o {exec_name} {tmp_file_name} -lm"
+        
+        # --- Etapa 1: Compilar ---
+        compile_process = subprocess.Popen(
+            compile_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
         )
+        _compile_stdout, compile_stderr = compile_process.communicate()
+        
+        # --- Etapa 2: Checar Erro de Compilação ---
+        if compile_process.returncode != 0:
+            try:
+                os.remove(tmp_file_name)
+            except Exception:
+                pass
+            return (None, f"COMPILATION_ERROR:\n{compile_stderr.decode()}".encode())
+
+        # --- Etapa 3: Executar ---
+        run_command = f"{exec_name}"
+        run_process = subprocess.Popen(
+            run_command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
+
+        try:
+            output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
+            return output, error
+
+        except subprocess.TimeoutExpired:
+            run_process.kill()
+            return "TLE", None
+        except Exception as e:
+            return None, str(e).encode()
+        finally:
+            # --- Etapa 4: Limpeza ---
+            try:
+                os.remove(tmp_file_name)
+                os.remove(exec_name)
+            except Exception:
+                pass
 
 
 class JavaRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run Java code."""
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Compila e depois executa o código Java."""
         code_str = code.decode() if isinstance(code, bytes) else code
-        match = re.search(r"public\s+class\s+([A-Za-z_][A-Za-z0-9_]*)", code_str)
+        match = re.search(r'public\s+class\s+([A-Za-z_][A-Za-z0-9_]*)', code_str)
         class_name = match.group(1) if match else "Main"
         file_name = f"{class_name}.java"
 
@@ -313,22 +399,37 @@ class JavaRunner(CodeRunner):
             file_path = os.path.join(tmp_dir, file_name)
             with open(file_path, "w") as f:
                 f.write(code_str)
-            command = f"javac {file_path} && java -cp {tmp_dir} {class_name}"
-            process = subprocess.Popen(
-                command,
+            
+            # --- Etapa 1: Compilar ---
+            compile_command = f"javac {file_path}"
+            compile_process = subprocess.Popen(
+                compile_command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+            )
+            _compile_stdout, compile_stderr = compile_process.communicate()
+
+            # --- Etapa 2: Checar Erro de Compilação ---
+            if compile_process.returncode != 0:
+                return (None, f"COMPILATION_ERROR:\n{compile_stderr.decode()}".encode())
+
+            # --- Etapa 3: Executar ---
+            run_command = f"java -cp {tmp_dir} {class_name}"
+            run_process = subprocess.Popen(
+                run_command,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=True,
             )
-            data_entry = data_input.encode("utf-8")
+            
+            data_entry = data_input.encode('utf-8')
             try:
-                output, error = process.communicate(
-                    data_entry, timeout=settings.TLE_TIMEOUT
-                )
+                output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                 return output, error
             except subprocess.TimeoutExpired:
-                process.kill()
+                run_process.kill()
                 return "TLE", None
             except Exception as e:
                 return None, str(e).encode()
@@ -414,60 +515,57 @@ class GoRunner(CodeRunner):
 
 
 class CSharpRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run C# code. Detecta se é script (dotnet-script) ou programa tradicional (dotnet run)."""
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Compila e depois executa o código C#."""
         code_str = code.decode() if isinstance(code, bytes) else code
-        if re.search(r"static\s+void\s+Main", code_str):
+        data_entry = data_input.encode('utf-8')
+        
+        if re.search(r'static\s+void\s+Main', code_str):
             with tempfile.TemporaryDirectory() as tmp_dir:
                 proj_dir = os.path.join(tmp_dir, "App")
                 os.makedirs(proj_dir)
-
-                subprocess.run(
-                    [
-                        "dotnet",
-                        "new",
-                        "console",
-                        "--output",
-                        proj_dir,
-                        "--use-program-main",
-                    ],
-                    check=True,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-
+                
+                # --- Etapa 1: Setup do Projeto ---
+                # (dotnet new é rápido, podemos manter)
+                subprocess.run(["dotnet", "new", "console", "--output", proj_dir, "--use-program-main"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+                
                 code_path = os.path.join(proj_dir, "Program.cs")
                 with open(code_path, "w") as f:
                     f.write(code_str)
+                
+                # --- Etapa 2: Compilar (dotnet build) ---
+                build_command = f"dotnet build --nologo --property:NoWarn=CS* --property:WarningsAsErrors=false --project {proj_dir}"
+                build_process = subprocess.Popen(
+                    build_command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    shell=True,
+                )
+                _build_stdout, build_stderr = build_process.communicate()
+                
+                if build_process.returncode != 0:
+                    return (None, f"COMPILATION_ERROR:\n{build_stderr.decode()}".encode())
 
-                command = f"dotnet run --project {proj_dir} --nologo --verbosity quiet --property:NoWarn=nullable"
-
-                process = subprocess.Popen(
-                    command,
+                # --- Etapa 3: Executar (dotnet run) ---
+                # O 'dotnet run' pode recompilar, mas como já buildamos, será rápido
+                # e ele garantirá a execução.
+                run_command = f"dotnet run --nologo --project {proj_dir}"
+                run_process = subprocess.Popen(
+                    run_command,
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     shell=True,
                 )
-                data_entry = data_input.encode("utf-8")
+                
                 try:
-                    output, error = process.communicate(
-                        data_entry, timeout=settings.TLE_TIMEOUT
-                    )
+                    output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                     return output, error
                 except subprocess.TimeoutExpired:
-                    process.kill()
+                    run_process.kill()
                     return "TLE", None
                 except Exception as e:
                     return None, str(e).encode()
         else:
-            output, error = self._execute(
-                "dotnet-script {0} --no-logo 2>&1 | grep -v 'warning CS'",
-                code,
-                data_input,
-                settings.TLE_TIMEOUT,
-                file_suffix=".cs",
-            )
-            return output, error
+            # Lógica para dotnet-script (interpretado, não precisa separar)
+            return self._execute("dotnet-script {0} --no-logo 2>&1 | grep -v 'warning CS'", code, data_input, settings.TLE_TIMEOUT, file_suffix='.cs')
