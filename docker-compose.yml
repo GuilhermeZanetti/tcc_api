@@ -83,7 +83,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.judge
-    container_name: worker
     volumes:
       - ./entrypoint.sh:/app/entrypoint.sh
     entrypoint: /app/entrypoint.sh
