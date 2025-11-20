@@ -12,14 +12,7 @@
         "20.00 23.60 21.15 19.37"
       ],
       "output_lines": [
-        "Temperatura media: 21.23\n",
-        "Temperatura maxima: 23.60 (1 x 4)\n",
-        "Temperatura minima: 19.37 (3 x 2)\n",
-        "Fileira 1: 21.12\n",
-        "Fileira 2: 21.50\n",
-        "Fileira 3: 21.15\n",
-        "Fileira 4: 21.35\n",
-        "Fileira 5: 21.03\n"
+        "Temperatura media: 21.23\nTemperatura maxima: 23.60 (1 x 4)\nTemperatura minima: 19.37 (3 x 2)\nFileira 1: 21.12\nFileira 2: 21.50\nFileira 3: 21.15\nFileira 4: 21.35\nFileira 5: 21.03\n"
       ]
     }
   ],
