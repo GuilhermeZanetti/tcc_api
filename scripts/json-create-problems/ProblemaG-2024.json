@@ -1,0 +1,14 @@
+{
+  "name": "Problema G: Noite da pizza",
+  "description": "Dados o número de participantes da Maratona e o número de pizzas de cada tamanho, escreva um programa para determinar o número de pedaços de pizza que sobram. Note que é possível que não sobre nenhum pedaço, e é possível também que alguns alunos não recebam um pedaço de pizza.",
+  "test_cases": [
+    {
+      "input_lines": [
+        "20 0 1 1 40 2 1 2 20 1 1 1"
+      ],
+      "output_lines": ["0", "4", "6\n"]
+    }
+  ],
+  "entry_description": "A primeira linha contém um inteiro N (1 ≤ N ≤ 1000) que representa o número de participantes da Maratona. A segunda linha contém um inteiro H (1 ≤ H ≤ 100) que se refere a quantidade de pizzas de 12 pedaços. A terceira linha contém um inteiro G (1 ≤ G ≤ 100) que se refere a quantidade de pizzas de 8 pedaços. A quarta e última linha contém um inteiro M (1 ≤ M ≤ 100) que se refere a quantidade de pizzas de 6 pedaços.",
+  "output_description": "Seu programa deve produzir uma única linha, contendo um único inteiro que se refere ao número de pedaços de pizza que sobram."
+}
