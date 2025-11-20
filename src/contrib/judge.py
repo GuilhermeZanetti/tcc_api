@@ -503,13 +503,69 @@ class JavaScriptRunner(CodeRunner):
 
 
 class GoRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run Go code."""
-        return self._execute(
-            "go run {0}", code, data_input, settings.TLE_TIMEOUT, file_suffix=".go"
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Compila e depois executa código Go."""
+        data_entry = data_input.encode('utf-8')
+
+        # 1. Criar arquivo temporário .go
+        with tempfile.NamedTemporaryFile(suffix=".go", delete=False) as tmp_file:
+            tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
+            tmp_file.flush()
+            tmp_file_name = tmp_file.name
+        
+        # Definir nome do executável de saída
+        exec_name = f"{tmp_file_name.rsplit('.', 1)[0]}_exec"
+        
+        # 2. Etapa de Compilação (go build)
+        # O flag -o define o nome do arquivo de saída
+        compile_command = f"go build -o {exec_name} {tmp_file_name}"
+        
+        compile_process = subprocess.Popen(
+            compile_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
         )
+        _compile_stdout, compile_stderr = compile_process.communicate()
+        
+        # 3. Checar Erro de Compilação
+        if compile_process.returncode != 0:
+            # Limpar arquivo fonte
+            try:
+                os.remove(tmp_file_name)
+            except Exception:
+                pass
+            
+            # Retorna o prefixo mágico que o _evaluate espera
+            return (None, f"COMPILATION_ERROR:\n{compile_stderr.decode()}".encode())
+
+        # 4. Etapa de Execução (Rodar o binário gerado)
+        run_command = f"{exec_name}"
+        run_process = subprocess.Popen(
+            run_command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
+
+        try:
+            output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
+            return output, error
+
+        except subprocess.TimeoutExpired:
+            run_process.kill()
+            return "TLE", None
+        except Exception as e:
+            return None, str(e).encode()
+        finally:
+            # 5. Limpeza (remover fonte e binário)
+            try:
+                os.remove(tmp_file_name)
+                if os.path.exists(exec_name):
+                    os.remove(exec_name)
+            except Exception:
+                pass
 
 
 class CSharpRunner(CodeRunner):
