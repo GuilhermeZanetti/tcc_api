@@ -8,21 +8,21 @@ import requests
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
 SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/ordered-by-problem"
-# SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/TESTES-YES"
+# SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/TESTES-COMPILATION-ERROR"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
 PROBLEM_ID_BY_PATH_NAME = {
     "A": "abad3db3-0f6a-4834-88e0-fd7ca0f42470",
-    "B": "d2a2c3f9-f9b9-4e86-8dc1-4c701adf03ab",
-    "C": "e28acc7a-3a3f-4dd3-a62f-2ce3e4fbe969",
-    "D": "e60eaa81-8d6f-4a7f-8f51-35e1a52d80f8",
-    "E": "7fe6335d-a4f0-44df-b871-941ddf9dc591",
-    "F": "b3dec5ab-8467-4fe8-a33d-ed5e3c2215ae",
-    "G": "2fabf551-6e9d-49f6-aa24-52b35a290393",
-    "H": "f48d15c0-9c8a-4e88-a0e6-9e525bf5be67",
-    "I": "b3bd0435-d056-4a13-b418-6e8dc58820d1",
-    "J": "7d68ca63-99ae-43fb-86b2-ea7e86b7440e",
+    # "B": "d2a2c3f9-f9b9-4e86-8dc1-4c701adf03ab",
+    # "C": "e28acc7a-3a3f-4dd3-a62f-2ce3e4fbe969",
+    # "D": "e60eaa81-8d6f-4a7f-8f51-35e1a52d80f8",
+    # "E": "7fe6335d-a4f0-44df-b871-941ddf9dc591",
+    # "F": "b3dec5ab-8467-4fe8-a33d-ed5e3c2215ae",
+    # "G": "2fabf551-6e9d-49f6-aa24-52b35a290393",
+    # "H": "f48d15c0-9c8a-4e88-a0e6-9e525bf5be67",
+    # "I": "b3bd0435-d056-4a13-b418-6e8dc58820d1",
+    # "J": "7d68ca63-99ae-43fb-86b2-ea7e86b7440e",
 }
 
 # --- Helper Functions ---

@@ -158,16 +158,18 @@ class Judge:
             # Se não houve output e não foi um erro de compilação ou runtime,
             # pode ser um erro silencioso, mas vamos tratá-lo como WA
             # (a menos que a saída esperada também seja vazia).
+            print('NOT FOUND OUTPUT')
             if not error:
                 # Se o erro for EOF (que filtramos acima), não é falha.
                 # Se não for EOF e não tiver output, é estranho.
+                print('NOT FOUND ERROR')
                 pass
 
         output_decoded = output.decode() if output else ""
         
         # 1. Comparação Estrita (Literal)
         if output_decoded == expected_output:
-            print(STATUS_ACCEPTED)
+            print(f'{STATUS_ACCEPTED} com Literal')
             return STATUS_ACCEPTED
 
         # 2. Normalização para Presentation Error (PE)
@@ -187,6 +189,7 @@ class Judge:
         # 3. Verificação de Case-Insensitive (se aplicável)
         if not settings.CASE_SENSITIVE:
             if output_normalized.lower() == expected_normalized.lower():
+                print(f'{STATUS_ACCEPTED} com Case-Insensitive')
                 return STATUS_ACCEPTED
 
         # 4. Se tudo falhar, é Wrong Answer
