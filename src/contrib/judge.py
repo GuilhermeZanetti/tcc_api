@@ -154,16 +154,14 @@ class Judge:
                 print(f"Runtime Error:\t{error_str}")
                 return STATUS_RUNTIME_ERROR
 
+        # 3. Verifica se NÃO há output.
+            # Se output for None, "not output" é Verdadeiro.
         if not output:
-            # Se não houve output e não foi um erro de compilação ou runtime,
-            # pode ser um erro silencioso, mas vamos tratá-lo como WA
-            # (a menos que a saída esperada também seja vazia).
-            print('NOT FOUND OUTPUT')
+            # 4. Verifica se NÃO há erro.
+            # Se error for None, "not error" é Verdadeiro.
             if not error:
-                # Se o erro for EOF (que filtramos acima), não é falha.
-                # Se não for EOF e não tiver output, é estranho.
-                print('NOT FOUND ERROR')
-                pass
+                # Conclusão: Sem saída e sem erro de runtime explícito = Erro de Compilação.
+                return STATUS_COMPILATION_ERROR
 
         output_decoded = output.decode() if output else ""
         
@@ -574,56 +572,76 @@ class GoRunner(CodeRunner):
 
 class CSharpRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Compila e depois executa o código C#."""
+        """Run C# code. Compiles using 'dotnet build' and then runs the executable."""
         code_str = code.decode() if isinstance(code, bytes) else code
-        data_entry = data_input.encode('utf-8')
         
+        # Verifica se é um programa completo (com Main) ou script
         if re.search(r'static\s+void\s+Main', code_str):
             with tempfile.TemporaryDirectory() as tmp_dir:
                 proj_dir = os.path.join(tmp_dir, "App")
                 os.makedirs(proj_dir)
                 
-                # --- Etapa 1: Setup do Projeto ---
-                # (dotnet new é rápido, podemos manter)
-                subprocess.run(["dotnet", "new", "console", "--output", proj_dir, "--use-program-main"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-                
+                # 1. Cria o Projeto
+                try:
+                    subprocess.run(
+                        ["dotnet", "new", "console", "--output", proj_dir, "--use-program-main"], 
+                        check=True, 
+                        stdout=subprocess.DEVNULL, 
+                        stderr=subprocess.DEVNULL
+                    )
+                except subprocess.CalledProcessError:
+                    return None, None
+
+                # 2. Escreve o Código do Usuário
                 code_path = os.path.join(proj_dir, "Program.cs")
                 with open(code_path, "w") as f:
                     f.write(code_str)
                 
-                # --- Etapa 2: Compilar (dotnet build) ---
-                build_command = f"dotnet build --nologo --property:NoWarn=CS* --property:WarningsAsErrors=false --project {proj_dir}"
-                build_process = subprocess.Popen(
-                    build_command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True,
+                # 3. Compila o Projeto (Build Explicito)
+                # Usamos --nologo e -v quiet para limpar a saída
+                build_cmd = ["dotnet", "build", proj_dir, "--configuration", "Release", "--nologo", "-v", "quiet"]
+                build_process = subprocess.run(
+                    build_cmd,
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE
                 )
-                _build_stdout, build_stderr = build_process.communicate()
                 
+                # Se o build falhar (exit code != 0), retornamos None, None -> COMPILATION_ERROR
                 if build_process.returncode != 0:
-                    return (None, f"COMPILATION_ERROR:\n{build_stderr.decode()}\n{_build_stdout.decode()}".encode())
+                    return None, None
 
-                # --- Etapa 3: Executar (dotnet run) ---
-                # O 'dotnet run' pode recompilar, mas como já buildamos, será rápido
-                # e ele garantirá a execução.
-                run_command = f"dotnet run --nologo --project {proj_dir}"
-                run_process = subprocess.Popen(
-                    run_command,
+                # 4. Executa o Binário Gerado
+                # Caminho padrão do binário no .NET 8.0
+                bin_path = os.path.join(proj_dir, "bin", "Release", "net8.0", "App")
+                
+                # Prepara o comando de execução
+                # Se o binário executável não existir (Linux às vezes gera apenas a DLL dependendo do ambiente),
+                # rodamos via 'dotnet App.dll'
+                if not os.path.exists(bin_path):
+                     bin_dll = os.path.join(proj_dir, "bin", "Release", "net8.0", "App.dll")
+                     command = f"dotnet {bin_dll}"
+                else:
+                     command = bin_path
+
+                # --- EXECUÇÃO DIRETA (Corrigindo o erro de permissão) ---
+                # Aqui chamamos o subprocess diretamente em vez de usar self._execute
+                data_entry = data_input.encode('utf-8')
+                process = subprocess.Popen(
+                    command,
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     shell=True,
                 )
-                
+
                 try:
-                    output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
+                    output, error = process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
                     return output, error
                 except subprocess.TimeoutExpired:
-                    run_process.kill()
+                    process.kill()
                     return "TLE", None
                 except Exception as e:
                     return None, str(e).encode()
         else:
-            # Lógica para dotnet-script (interpretado, não precisa separar)
+            # Mantém o suporte a Scripts (dotnet-script)
             return self._execute("dotnet-script {0} --no-logo 2>&1 | grep -v 'warning CS'", code, data_input, settings.TLE_TIMEOUT, file_suffix='.cs')
