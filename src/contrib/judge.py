@@ -437,18 +437,68 @@ class JavaRunner(CodeRunner):
 
 
 class PHPRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """Run PHP code."""
-        return self._execute(
-            "php {0}",
-            code,
-            data_input,
-            settings.TLE_TIMEOUT,
-            file_suffix=".php",
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Verifica a sintaxe (Lint) e depois executa código PHP."""
+        data_entry = data_input.encode('utf-8')
+
+        # 1. Criar arquivo temporário .php
+        with tempfile.NamedTemporaryFile(suffix=".php", delete=False) as tmp_file:
+            tmp_file.write(code if isinstance(code, bytes) else code.encode('utf-8'))
+            tmp_file.flush()
+            tmp_file_name = tmp_file.name
+        
+        # 2. Etapa de Verificação de Sintaxe (Lint)
+        # A flag -l (lint) verifica apenas erros de sintaxe sem executar o código.
+        lint_command = f"php -l {tmp_file_name}"
+        
+        lint_process = subprocess.Popen(
+            lint_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
+        # O php -l geralmente envia a mensagem de erro para o STDOUT, não STDERR.
+        lint_stdout, lint_stderr = lint_process.communicate()
+        
+        # Se o código de retorno for diferente de 0, houve erro de sintaxe.
+        if lint_process.returncode != 0:
+            try:
+                os.remove(tmp_file_name)
+            except Exception:
+                pass
+            
+            # Combina stdout e stderr para garantir que capturamos a mensagem
+            error_msg = (lint_stdout or b"") + (lint_stderr or b"")
+            
+            # Retorna o prefixo que o _evaluate identifica como CE
+            # Removemos o nome do arquivo temporário da mensagem para ficar mais limpo, se desejar
+            return (None, f"COMPILATION_ERROR:\n{error_msg.decode()}".encode())
+
+        # 3. Etapa de Execução (Só ocorre se o Lint passar)
+        run_command = f"php {tmp_file_name}"
+        run_process = subprocess.Popen(
+            run_command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
         )
 
+        try:
+            output, error = run_process.communicate(data_entry, timeout=settings.TLE_TIMEOUT)
+            return output, error
+
+        except subprocess.TimeoutExpired:
+            run_process.kill()
+            return "TLE", None
+        except Exception as e:
+            return None, str(e).encode()
+        finally:
+            # 4. Limpeza
+            try:
+                os.remove(tmp_file_name)
+            except Exception:
+                pass
 
 class JavaScriptRunner(CodeRunner):
     def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
