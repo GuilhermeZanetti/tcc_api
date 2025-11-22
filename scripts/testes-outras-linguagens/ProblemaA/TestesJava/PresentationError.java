@@ -2,7 +2,7 @@ import java.util.Scanner;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-public class Main {
+public class PresentationError {
     public static void main(String[] args) {
         // Configura o Scanner para usar ponto como separador decimal
         Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
