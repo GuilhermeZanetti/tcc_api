@@ -451,58 +451,9 @@ class PHPRunner(CodeRunner):
 
 
 class JavaScriptRunner(CodeRunner):
-    def run(
-        self, code: bytes, data_input: str
-    ) -> Tuple[Optional[bytes], Optional[bytes]]:
-        """
-        Run JavaScript code using Node.js with an I/O wrapper.
-        The user's code is expected to be inside a function called 'main'.
-        """
-        user_code = code.decode() if isinstance(code, bytes) else code
-
-        # O 'data_input' é formatado como um array de strings do JavaScript.
-        # As aspas são escapadas para evitar erros de sintaxe.
-        input_lines_js_array = (
-            "["
-            + ",".join(
-                f'"{line}"'
-                for line in data_input.replace("\\", "\\\\")
-                .replace('"', '\\"')
-                .splitlines()
-            )
-            + "]"
-        )
-
-        # Wrapper que lê a entrada, chama a função 'main' do usuário e executa o código.
-        wrapper_code = f"""
-        // --- Judge's Wrapper ---
-        // O juiz prepara a entrada de dados para o participante.
-        const inputLines = {input_lines_js_array};
-        let currentLine = 0;
-
-        // A função 'readline' simula a leitura linha por linha, como em outras linguagens.
-        function readline() {{
-            return inputLines[currentLine++];
-        }}
-
-        // --- User's Code Starts Here ---
-
-        {user_code}
-
-        // --- Judge's Execution ---
-        // O juiz chama a função principal do usuário.
-        // O participante não precisa se preocupar com I/O assíncrono.
-        main();
-        """
-
-        # A entrada de dados ('data_input') é vazia, pois já foi injetada no wrapper.
-        return self._execute(
-            "node {0}",
-            wrapper_code.encode(),
-            "",
-            settings.TLE_TIMEOUT,
-            file_suffix=".js",
-        )
+    def run(self, code: bytes, data_input: str) -> Tuple[Optional[bytes], Optional[bytes]]:
+        """Run JavaScript code using Node.js."""
+        return self._execute("node {0}", code, data_input, settings.TLE_TIMEOUT, file_suffix=".js")
 
 
 class GoRunner(CodeRunner):
