@@ -10,4 +10,4 @@ SUB_AUTHORIZE = "api_externa"
 TOKEN_PAYLOAD = "sub"
 AUTH_ALGORITHM = "HS256"
 
-SUPPORTED_LANGUAGES = {'py', 'c', 'cpp', 'java', 'php', 'js', 'go', 'csharp'}
+SUPPORTED_LANGUAGES = {'py', 'c', 'cpp', 'java', 'php', 'js', 'go', 'cs'}

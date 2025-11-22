@@ -26,5 +26,5 @@ func main() {
 
 	// A saída deve ter um único número real, com 3 casas decimais.
 	// O formatador "%.3f" garante 3 casas decimais.
-	fmt.Printf("%.3f\n", a1)
+	fmt.Printf("%.3f", a1)
 }

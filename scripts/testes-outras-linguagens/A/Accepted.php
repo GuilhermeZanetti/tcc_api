@@ -17,7 +17,9 @@ $A1 = ($P * 7.0 + $AP * 2.0 + $TB * 1.0) / 10.0;
 
 // A saída deve ter um único número real, com 3 casas decimais.
 // number_format formata o número com 3 decimais, usando '.' como separador.
-// CORREÇÃO: Removido o "\n" no final para evitar o Presentation Error (PE).
-echo number_format($A1, 3, '.', ''); 
+
+$result = number_format($A1, 3, '.', ''); 
+
+echo $result."\n"
 
 ?>

@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.Locale;
 
-public class Main {
+public class Accepted {
     public static void main(String[] args) {
         // 1. Configuração e Leitura: 
         // Usa Locale.US para garantir que o Scanner interprete o input (e.g., "4.358") 
@@ -18,8 +18,8 @@ public class Main {
         // 3. Saída Formatada (Correta):
         // Usa System.out.printf com Locale.US para garantir que o separador decimal seja o ponto.
         // O formato "%.3f" garante 3 casas decimais.
-        // CRUCIAL: O printf (sem '\n') evita o Presentation Error (PE).
-        System.out.printf(Locale.US, "%.3f", A1);
+        // Deve ter quebra de linha
+        System.out.printf(Locale.US, "%.3f\n", A1);
         
         scanner.close();
     }

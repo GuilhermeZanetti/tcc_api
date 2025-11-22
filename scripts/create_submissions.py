@@ -121,7 +121,7 @@ def main():
 
         for filename in sorted(os.listdir(problem_dir)):
             # Simple extension check, can be improved
-            if not any(filename.endswith(ext) for ext in [".c", ".cpp", ".py", ".js", ".java", ".go", ".php"]):
+            if not any(filename.endswith(ext) for ext in [".c", ".cpp", ".cs", ".py", ".js", ".java", ".go", ".php"]):
                 continue
 
             file_path = os.path.join(problem_dir, filename)

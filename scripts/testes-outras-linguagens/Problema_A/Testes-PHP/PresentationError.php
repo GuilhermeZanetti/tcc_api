@@ -17,3 +17,4 @@ $A1 = ($P * 7.0 + $AP * 2.0 + $TB * 1.0) / 10.0;
 // Removemos o '\n' e adicionamos espaços ('    ' e '  ') para isolar a causa.
 echo "    " . number_format($A1, 3, '.', '') . "  ";
 ?>
+

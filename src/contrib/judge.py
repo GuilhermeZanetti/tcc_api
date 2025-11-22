@@ -79,7 +79,7 @@ class Judge:
             "php": PHPRunner(),
             "js": JavaScriptRunner(),
             "go": GoRunner(),
-            "csharp": CSharpRunner(),
+            "cs": CSharpRunner(),
         }
         return runners.get(language_type)
 
@@ -602,7 +602,7 @@ class CSharpRunner(CodeRunner):
                 _build_stdout, build_stderr = build_process.communicate()
                 
                 if build_process.returncode != 0:
-                    return (None, f"COMPILATION_ERROR:\n{build_stderr.decode()}".encode())
+                    return (None, f"COMPILATION_ERROR:\n{build_stderr.decode()}\n{_build_stdout.decode()}".encode())
 
                 # --- Etapa 3: Executar (dotnet run) ---
                 # O 'dotnet run' pode recompilar, mas como já buildamos, será rápido

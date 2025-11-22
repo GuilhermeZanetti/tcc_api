@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Main {
+public class RuntimeError {
     public static void main(String[] args) {
         try {
             // Configura o Scanner para usar ponto como separador decimal
