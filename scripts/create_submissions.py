@@ -7,8 +7,9 @@ import requests
 
 # --- Configuration ---
 API_BASE_URL = "http://127.0.0.1:8000/v0"
-SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/ordered-by-problem"
-# SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/TESTES-COMPILATION-ERROR"
+# SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/ordered-by-problem"
+# SUBMISSIONS_DIR = "/Users/zanetti/projetos/boca_scrapping/ordered-by-problem"
+SUBMISSIONS_DIR = "/Users/zanetti/projetos/tcc_api/scripts/testes-outras-linguagens"
 POLL_INTERVAL_SECONDS = 2
 MAX_POLL_ATTEMPTS = 30
 
