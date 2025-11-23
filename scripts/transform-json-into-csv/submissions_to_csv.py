@@ -1,9 +1,9 @@
 import pandas as pd
 import json
 
-caminho_arquivo = 'scripts/testes-outras-linguagens'
+caminho_arquivo = 'scripts/transform-json-into-csv'
 # Nome do seu arquivo JSON de entrada
-json_filename = f'{caminho_arquivo}/response-outras-linguagens.json'
+json_filename = f'{caminho_arquivo}/response.json'
 # Nome do arquivo CSV de saída
 csv_filename = f'{caminho_arquivo}/output_results.csv'
 
