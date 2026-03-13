@@ -4,7 +4,7 @@ Este guia detalha o processo de submissão em massa de códigos-fonte para a API
 
 O fluxo é gerenciado por dois scripts principais: create_submissions.py (Submissão e Polling) e submissions_to_csv.py (Conversão para CSV).
 
-📈 Visão Geral do Workflow
+# 📈 Visão Geral do Workflow
 
 O processo de submissão e validação é dividido em três etapas críticas:
 
@@ -55,7 +55,7 @@ FASE 2: Execução da Automação
 
 O script exige autenticação Bearer para autorizar a submissão de códigos.
 
-Acesse o endpoint de autenticação da sua API (ex: POST /auth/login).
+Acesse o endpoint de autenticação da sua API: POST /auth/integrator-token.
 
 Copie o valor do access_token (JWT) gerado.
 
@@ -66,8 +66,9 @@ Execute o script create_submissions.py, passando o token JWT copiado como argume
 Execute este comando a partir da raiz do projeto:
 
 # Substitua {COLE_SEU_TOKEN_JWT_AQUI} pelo token real
+```
 python scripts/create_submissions.py {COLE_SEU_TOKEN_JWT_AQUI}
-
+```
 
 O script irá:
 
@@ -109,22 +110,31 @@ O arquivo de saída (ex: results_lote_teste_1_go_php_cs.csv) será gerado na mes
 
 Importe o arquivo CSV gerado no Google Sheets ou Excel para realizar a análise estatística.
 
-🧹 FASE 4: Limpeza do Banco de Dados (MongoDB)
+# 🧹 FASE 4: Limpeza do Banco de Dados (MongoDB)
 
 Para iniciar uma nova bateria de testes do zero, você deve limpar todas as submissões anteriores do banco de dados (MongoDB) do juiz.
 
 Siga os passos, substituindo <nome_ou_id_do_container_mongo> pelo identificador do seu container (obtido via docker ps).
 
-# 1. Encontre o nome do seu container Mongo 
+## 1. Encontre o nome do seu container Mongo 
+```
 docker ps 
+```
 
-# 2. Acesse o shell Mongo DENTRO do container
+## 2. Acesse o shell Mongo DENTRO do container
+```
 docker exec -it <nome_ou_id_do_container_mongo> mongosh
+```
 
-# 3. No shell Mongo, execute os comandos:
-#    > use judge
-#    > db.submissions.deleteMany({})
-#    > exit
+## 3. No shell Mongo, execute os comandos:
 
-# 4. Saia do container
-# exit
+```shell
+use judge
+db.submissions.deleteMany({})
+exit
+```
+
+## 4. Saia do container
+```
+ exit
+```

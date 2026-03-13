@@ -8,7 +8,7 @@ Este projeto é uma API de backend baseada em Python para um sistema de julgamen
 
 *   **Backend:** Python com o framework FastAPI.
 *   **Banco de Dados:** MongoDB para armazenar dados relacionados a usuários, problemas e submissões.
-*   **Fila de Tarefas:** Celery com um broker Redis para gerenciar o julgamento assíncrono de submissões.
+*   **Fila de Tarefas:** RQ (Redis Queue) com broker Redis para gerenciar o julgamento assíncrono de submissões.
 *   **Conteinerização:** Docker e Docker Compose são usados para orquestrar os diferentes serviços (API, worker, juiz e banco de dados).
 *   **Gerenciamento de Dependências:** Poetry é usado para gerenciar as dependências do Python.
 
@@ -49,16 +49,16 @@ O sistema é composto por quatro serviços principais:
 
 *   **Execute o linter:**
     ```bash
-    poetry run ruff check .
+    poetry run blue .
     ```
-    Este projeto usa `ruff` para linting.
+    Este projeto usa `blue` para linting e formatação.
 
 *   **Teste de Estresse:**
     O diretório `k6_testing` contém uma configuração básica de teste de estresse usando k6.
 
 ## Convenções de Desenvolvimento
 
-*   **Estilo de Código:** O projeto usa `ruff` para linting e formatação. O `Makefile` fornece um comando `lint` para impor o estilo.
+*   **Estilo de Código:** O projeto usa `blue` para linting e formatação. O `Makefile` fornece um comando `lint` para impor o estilo.
 *   **Configuração:** A configuração da aplicação é gerenciada usando `pydantic-settings` e é carregada de um arquivo `local.env`. A configuração principal está em `src/config.py`.
 *   **Modularidade:** A aplicação é bem estruturada, com uma clara separação de responsabilidades. Os roteadores são definidos em `src/routers.py` e são carregados dinamicamente pela aplicação principal em `src/app.py`. Cada recurso (por exemplo, `users`, `problems`, `submissions`) tem seu próprio módulo dedicado com controladores, modelos e repositórios.
 *   **Tipagem:** O código usa extensivamente as dicas de tipo do Python.

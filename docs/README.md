@@ -63,7 +63,7 @@ Se a chave for válida, você receberá uma resposta semelhante a:
   "token_type": "bearer"
 
 Copie o valor de access_token e use nas requisições autenticadas:
-Authorization: <seu_token_jwt>
+Authorization: Bearer <seu_token_jwt>
 
 
 ```
@@ -104,7 +104,12 @@ Execute o seguinte comando no MongoDB para cadastrar o acesso da API externa:
     "permissions": [
       "read:problems",
       "read:submissions",
-      "update:problems"
+      "create:problems",
+      "create:submissions",
+      "update:problems",
+      "update:submissions",
+      "delete:problems",
+      "delete:submissions"
     ],
     "created_at": ISODate(),
     "updated_at": ISODate()
